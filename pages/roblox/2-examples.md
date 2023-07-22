@@ -8,11 +8,14 @@ These are a few short examples of things you can do using the built-in `roblox` 
 ## Make all parts anchored in a place file
 
 ```lua copy
+local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 
--- Read the place file called myPlaceFile.rbxl into a DataModel called "game"
--- This works exactly the same as in Roblox, except "game" does not exist by default - you have to load it from a file!
-local game = roblox.readPlaceFile("myPlaceFile.rbxl")
+-- Read the place file called myPlaceFile.rbxl into a DataModel variable called "game"
+-- This works exactly the same as in Roblox, except "game" does not exist by default.
+-- To access "game" you have to load it from a file!
+local file = fs.readFile("myPlaceFile.rbxl")
+local game = roblox.deserializePlace(file)
 local workspace = game:GetService("Workspace")
 
 -- Make all of the parts in the workspace anchored
@@ -23,32 +26,40 @@ for _, descendant in workspace:GetDescendants() do
 end
 
 -- Save the DataModel (game) back to the file that we read it from
-roblox.writePlaceFile("myPlaceFile.rbxl")
+file = roblox.serializePlace("myPlaceFile.rbxl")
+fs.writeFile(file)
 ```
+
+---
 
 ## Save instances in a place as individual model files
 
 ```lua copy
-local roblox = require("@lune/roblox")
 local fs = require("@lune/fs")
+local roblox = require("@lune/roblox")
 
 -- Here we load a file just like in the first example
-local game = roblox.readPlaceFile("myPlaceFile.rbxl")
+local file = fs.readFile("myPlaceFile.rbxl")
+local game = roblox.deserializePlace(file)
 local workspace = game:GetService("Workspace")
 
--- We use a normal Lune API to make sure a directory exists to save our models in
+-- Make sure a directory exists to save our models in
 fs.writeDir("models")
 
 -- Then we save all of our instances in Workspace as model files, in our new directory
 -- Note that a model file can actually contain several instances at once, so we pass a table here
 for _, child in workspace:GetChildren() do
-	roblox.writeModelFile("models/" .. child.Name, { child })
+	file = roblox.serializeModel({ child })
+	fs.writeFile("models/" .. child.Name, file)
 end
 ```
+
+---
 
 ## Make a new place from scratch
 
 ```lua copy
+local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 local Instance = roblox.Instance
 
@@ -70,5 +81,6 @@ for i = 1, 50 do
 end
 
 -- As always, we have to save the DataModel (game) to a file when we're done
-roblox.writePlaceFile("myPlaceWithLotsOfModels.rbxl")
+local file = roblox.serializePlace(game)
+fs.writeFile("myPlaceWithLotsOfModels.rbxl", file)
 ```
