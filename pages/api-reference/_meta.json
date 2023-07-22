@@ -1,0 +1,9 @@
+{
+	"fs": "FS",
+	"net": "Net",
+	"process": "Process",
+	"roblox": "Roblox",
+	"serde": "Serde",
+	"stdio": "Stdio",
+	"task": "Task"
+}
