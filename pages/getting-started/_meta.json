@@ -1,6 +1,6 @@
 {
 	"1-installation": "Installation",
-	"2-writing-scripts": "Writing Scripts",
-	"3-running-scripts": "Running Scripts",
+	"2-introduction": "Introduction",
+	"3-command-line-usage": "Command-Line Usage",
 	"4-editor-setup": "Editor Setup"
 }

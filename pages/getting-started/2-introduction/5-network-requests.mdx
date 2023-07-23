@@ -1,0 +1,127 @@
+# Network Requests
+
+One of Lune's most useful libraries is the networking library, also known as `net`. This library
+lets you access the internet and make HTTP requests to different websites, servers, and external
+APIs.
+
+## Sending HTTP Requests
+
+Sending HTTP requests is the most basic function of the [`net`](../../api-reference/net.md) library.
+Let's make a script called `googler.luau`:
+
+```lua copy filename="googler.luau"
+local net = require("@lune/net")
+
+local response = net.request("https://google.com")
+
+if response.ok then
+	print(
+		"Google responded with status code",
+		response.statusCode,
+		"and response message",
+		response.statusMessage,
+		"!"
+	)
+else
+	print("Google is down!! What?!?")
+end
+```
+
+Now you can place this script in your current directory, and run it using Lune:
+
+```sh copy filename="Bash"
+lune googler
+```
+
+## Sending JSON Requests
+
+[JSON](https://www.json.org/json-en.html), or JavaScript Object Notation, is the most common format
+for sending data over the network. Lune includes APIs for serializing & deserializing JSON, also
+known as stringifying & parsing, in the `net` library. Let's use the free testing web API at
+[`https://jsonplaceholder.typicode.com/`](https://jsonplaceholder.typicode.com/) and send + receive
+some JSON data:
+
+```lua copy filename="json-api.luau"
+print("Sending PATCH request to web API")
+
+local apiResponse = net.request({
+	url = "https://jsonplaceholder.typicode.com/posts/1",
+	method = "PATCH",
+	headers = {
+		["Content-Type"] = "application/json",
+	},
+	body = net.jsonEncode({
+		title = "foo",
+		body = "bar",
+	}),
+})
+
+if not apiResponse.ok then
+	error(
+		string.format(
+			"%s\n%d (%s)\n%s",
+			"Failed to send network request!",
+			apiResponse.statusCode,
+			apiResponse.statusMessage,
+			apiResponse.body
+		)
+	)
+end
+
+type ResponseType = {
+	id: number,
+	title: string,
+	body: string,
+	userId: number,
+}
+
+local responseTable: ResponseType = net.jsonDecode(apiResponse.body)
+assert(responseTable.title == "foo", "Invalid json response")
+assert(responseTable.body == "bar", "Invalid json response")
+
+print("Got valid JSON response with post title set to 'foo' and post body set to 'bar'")
+print("Full response:", responseTable)
+```
+
+Running the above script Lune should now send a request to the placeholder API, verify that the
+response was correct, and print it out:
+
+```sh copy filename="Bash"
+lune json-api
+```
+
+---
+
+<details>
+<summary>Bonus</summary>
+
+## Network Server
+
+Lune can not only perform network requests, it can also open a server on a given port and serve
+requests on it. Here's a small example:
+
+```lua copy filename="network-server.luau"
+local net = require("@lune/net")
+
+local counter = 0
+net.serve(8080, function()
+	counter += 1
+	return {
+		status = 200,
+		body = "Hello! This is response #" .. tostring(counter),
+	}
+end)
+
+print("Listening on port 8080 🚀")
+```
+
+Just like before, you can place this script in your current directory, and run it using Lune:
+
+```sh copy filename="Bash"
+lune network-server
+```
+
+Now, when you visit [`http://localhost:8080/`](http://localhost:8080/) you should see the response
+text above and the counter increasing each time you visit the page.
+
+</details>

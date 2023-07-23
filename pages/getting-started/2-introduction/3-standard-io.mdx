@@ -1,0 +1,92 @@
+# Standard I/O
+
+One of Lune's most useful libraries for writing scripts is the standard I/O library, also known as
+`stdio`, which will be the first one we introduce here. The pages following this one will introduce
+several others.
+
+## Prompting for User Input
+
+The easiest way to get started and being productive using Lune is to prompt the person running your
+script for some text input, which you can do using the [`stdio`](../../api-reference/stdio.md)
+library. Let's make a script called `hello.luau`:
+
+```lua copy filename="hello.luau"
+local stdio = require("@lune/stdio")
+
+local name = stdio.prompt("text", "Hello there! What's your name?")
+
+print("Hello, " .. name .. "!")
+```
+
+Now you can place this script in your current directory, and run it using Lune:
+
+```sh copy filename="Bash"
+lune hello
+```
+
+You can also prompt for more than just text. Let's extend the above script and ask the person
+running the script if that was really their name:
+
+```lua copy filename="hello.luau"
+local confirmed = stdio.prompt("confirm", "Is that really your name?")
+if confirmed then
+	print("Nice to meet you, " .. name .. "!")
+	print("Have a great day!")
+else
+	print("You lied to me! Goodbye 😡")
+end
+```
+
+There are more options for prompting for user input than what we covered in this example, but these
+two basic prompting methods should cover most of your use cases and get you started with making
+interactive scripts.
+
+Next, head on over to the following section on [Script Arguments](./4-script-arguments.md) or check
+out the bonus game below!
+
+<details>
+<summary>Bonus</summary>
+
+## Guessing Game
+
+Here's a tiny game you can play versus the computer, using nothing but Lune's
+[`stdio`](../../api-reference/stdio.md) library and Luau's `math` library. This is a bit longer of a
+script, but don't worry, it is still only using the same functions as the script above, albeit this
+time together with a `while ... do` loop and a couple `if ... then` statements:
+
+```lua copy filename="guessing-game.luau"
+local stdio = require("@lune/stdio")
+
+print("")
+print("Let's play a game! Whoever guesses the correct number between 1 and 10 first will win.")
+print("")
+
+local answer = tostring(math.random(1, 10))
+
+local guess = stdio.prompt("text", "Input a number between 1 and 10")
+while guess ~= answer do
+	print("Incorrect! Computer's turn...")
+
+	local computer = tostring(math.random(1, 10))
+	print("The computer guessed", computer)
+
+	if computer == answer then
+		break
+	end
+
+	print("Incorrect! Your turn...")
+	guess = stdio.prompt("text", "Input a number between 1 and 10")
+end
+
+print("")
+print(if guess == answer then "You won the game! 🎉" else "The computer won the game! 😭")
+print("")
+```
+
+Just like before, you can place this script in your current directory, and run it using Lune:
+
+```sh copy filename="Bash"
+lune guessing-game
+```
+
+</details>

@@ -38,6 +38,6 @@ when installing here.
 Congratulations! You've installed Lune and are now ready to write your first script.
 
 -   If you want to write standalone scripts, head over to the
-    [Writing Scripts](./1-writing-scripts.md) page.
+    [Introduction](./2-introduction/1-hello-lune.md) section.
 -   If you want to write Lune scripts specifically for Roblox, check out the
     [Roblox](../roblox/1-introduction.md) section.

@@ -1,8 +1,8 @@
-<!-- markdownlint-disable MD033 -->
+# Command-Line Usage
 
-# Running Lune Scripts
+## Running Scripts
 
-After you've written a script file, for example `script-name.luau`, you can run it:
+When you've written a script file, for example `script-name.luau`, you can run it as such:
 
 ```sh copy
 lune script-name
@@ -16,24 +16,7 @@ This will look for the file `script-name.luau`**_<sup>[1]</sup>_** in a few loca
 -   The folder `lune` in the _home_ directory, if it exists
 -   The folder `.lune` in the _home_ directory, if it exists
 
-## Passing Command-Line Arguments
-
-Arguments can be passed to a Lune script directory from the command line when running it:
-
-```sh copy
-lune script-name arg1 arg2 "argument three"
-```
-
-These arguments will then be available in your script using `process.args`:
-
-```lua copy
-local process = require("@lune/process")
-
-print(process.args)
---> { "arg1", "arg2", "argument three" }
-```
-
-## Additional Commands
+## Listing Scripts
 
 ```sh copy
 lune --list
@@ -43,12 +26,18 @@ Lists all scripts found in `lune` or `.lune` directories, including any top-leve
 comments. <br /> Lune description comments are always written at the top of a file and start with a
 lua-style comment arrow (`-->`).
 
+## Advanced Usage
+
 ```sh copy
 lune -
 ```
 
-Runs a script passed to Lune using stdin. Occasionally useful for running scripts piped to Lune from
-external sources.
+Runs a script passed to Lune using stdin. Useful for running scripts piped to Lune from external
+sources. Example:
+
+```sh copy
+echo "print 'Hello, terminal!'" | lune -
+```
 
 ---
 
