@@ -1,3 +1,5 @@
+import { Callout } from 'nextra/components'
+
 # Installation
 
 The preferred way of installing Lune is using [Aftman](https://github.com/lpghatguy/aftman).
@@ -24,17 +26,28 @@ when installing here.
 <details>
 <summary>Community-maintained</summary>
 
-### ArchLinux User Repository
+### AUR (Arch User Repository)
+There are a number of packages available on the AUR:
+
+- `lune` - Builds from the latest stable release source. 
+- `lune-git` - Builds from the latest commit in the repo; unstable.
+- `lune-bin` - Installs a precompiled binary from GitHub Release artifacts.
+
+These can be installed with your favourite AUR manager as such:
 
 ```sh copy filename="Bash"
-paru -S lune
+paru -S [PACKAGE_NAME]
 ```
 
 ***or***
 
 ```sh copy filename="Bash"
-yay -S lune
+yay -S [PACKAGE_NAME]
 ```
+
+<Callout type="warning" emoji="⚠️">
+  Only one of these AUR packages must be installed at a time in order to prevent conflicts.
+</Callout>
 
 </details>
 
