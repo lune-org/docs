@@ -49,6 +49,17 @@ yay -S [PACKAGE_NAME]
   Only one of these AUR packages must be installed at a time in order to prevent conflicts.
 </Callout>
 
+
+### Scoop
+Windows users can use [scoop](https://scoop.sh) to install lune.
+
+```ps copy filename="PowerShell"
+# Add the bucket
+scoop bucket add lune https://github.com/CompeyDev/lune-packaging.git
+
+# Install the package
+scoop install lune
+```
 </details>
 
 <details>
@@ -60,17 +71,6 @@ your system. <br /> Once installed, run the following command in your terminal:
 
 ```sh copy filename="Bash"
 cargo install lune --locked
-```
-
-### Scoop
-Windows users can use [scoop](https://scoop.sh) to install lune.
-
-```ps copy filename="PowerShell"
-# Add the bucket
-scoop bucket add lune https://github.com/CompeyDev/lune-packaging.git
-
-# Install the package
-scoop install lune
 ```
 </details>
 
