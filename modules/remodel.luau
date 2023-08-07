@@ -125,38 +125,40 @@ local function uploadAssetId(assetId: number, contents: string)
 	-- 1. Try to find the auth cookie for the current user
 	local cookie = getAuthCookieWithFallbacks()
 
-	-- 2. Create request headers in advance, we might re-use them for CSRF challenges
-	local headers = {
+	-- 2. Use a different endpoint to fetch a valid CSRF token
+	local csrfHeaders = {
 		["User-Agent"] = "Roblox/WinInet",
-		["Content-Type"] = "application/octet-stream",
 		Accept = "application/json",
 		Cookie = cookie,
 	}
 
-	-- 3. Create and send a request to the upload url
+	local csrfResponse = net.request({
+		url = `https://auth.roblox.com/`,
+		body = contents,
+		method = "POST",
+		headers = csrfHeaders,
+	})
+
+	local csrfToken = csrfResponse.headers["x-csrf-token"]
+	if csrfToken == nil then error('Failed to fetch CSRF token.') end
+
+	-- 3. Upload the asset to Roblox
+	local uploadHeaders = {
+		["User-Agent"] = "Roblox/WinInet",
+		["Content-Type"] = "application/octet-stream",
+		['X-CSRF-Token'] = csrfToken,
+		Accept = "application/json",
+		Cookie = cookie,
+	}
+
 	local uploadResponse = net.request({
 		url = `https://data.roblox.com/Data/Upload.ashx?assetid={assetId}`,
 		body = contents,
 		method = "POST",
-		headers = headers,
+		headers = uploadHeaders,
 	})
 
-	-- 4. Check if we got a valid response, we might have gotten a CSRF
-	--    challenge and need to send the request with a token included
-	if
-		not uploadResponse.ok
-		and uploadResponse.statusCode == 403
-		and uploadResponse.headers["x-csrf-token"] ~= nil
-	then
-		headers["X-CSRF-Token"] = uploadResponse.headers["x-csrf-token"]
-		uploadResponse = net.request({
-			url = `https://data.roblox.com/Data/Upload.ashx?assetid={assetId}`,
-			body = contents,
-			method = "POST",
-			headers = headers,
-		})
-	end
-
+	-- 4. Make sure it uploaded properly
 	if not uploadResponse.ok then
 		error(
 			string.format(
