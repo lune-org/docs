@@ -29,7 +29,7 @@ when installing here.
 ### AUR (Arch User Repository)
 There are a number of packages available on the AUR:
 
-- `lune` - Builds from the latest stable release source. 
+- `lune` - Builds from the latest stable release source.
 - `lune-git` - Builds from the latest commit in the repo; unstable.
 - `lune-bin` - Installs a precompiled binary from GitHub Release artifacts.
 
@@ -62,19 +62,40 @@ scoop install lune
 ```
 
 ### Homebrew
-MacOS users can use [Homebrew](https://brew.sh) to install lune.
+[Homebrew](https://brew.sh) is a package manager for MacOS and Linux. Lune has been published to Homebrew Core, so it can be installed with:
 
-To install preinstalled binaries:
 ```sh copy filename="Bash"
+# Installs latest stable precompiled binary
 brew install lune
 ```
 
 ***or***
 
-To build from source:
 ```sh copy filename="Bash"
+# Builds from latest stable source
 brew install lune --build-from-source
 ```
+
+### APT
+APT is a package manager for debian based distributions that uses dpkg to install packages.
+
+- Import the GPG signing keys:
+```sh copy filename="Bash"
+curl https://id.devcomp.xyz/hi@devcomp.xyz/2.gpg | gpg --import
+sudo sh -c "curl https://id.devcomp.xyz/hi@devcomp.xyz/2.gpg | sudo gpg --dearmor > /usr/share/keyrings/lune-archive-keyring.gpg"
+```
+- Add the repository to `sources.list`:
+```md copy filename="/etc/apt/sources.list"
+deb [signed-by=/usr/share/keyrings/lune-archive-keyring.gpg] https://repos.devcomp.xyz/ bookworm main
+```
+- Install the package:
+```console copy filename="Bash"
+sudo apt update
+sudo apt install lune
+```
+
+### AppImage
+AppImages are platform independent sandboxed binaries that work out of the box. Go to the [GitHub Actions Page](https://github.com/CompeyDev/lune-packaging/actions/workflows/appimage.yaml), and download the artifact suitable for your architecture from the build artifacts.
 </details>
 
 <details>
