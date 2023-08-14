@@ -78,20 +78,13 @@ brew install lune --build-from-source
 ### APT
 APT is a package manager for debian based distributions that uses dpkg to install packages.
 
-- Import the GPG signing keys:
-```sh copy filename="Bash"
-curl https://id.devcomp.xyz/hi@devcomp.xyz/2.gpg | gpg --import
-sudo sh -c "curl https://id.devcomp.xyz/hi@devcomp.xyz/2.gpg | sudo gpg --dearmor > /usr/share/keyrings/lune-archive-keyring.gpg"
-```
-- Add the repository to `sources.list`:
-```md copy filename="/etc/apt/sources.list"
-deb [signed-by=/usr/share/keyrings/lune-archive-keyring.gpg] https://repos.devcomp.xyz/ bookworm main
-```
-- Install the package:
-```console copy filename="Bash"
-sudo apt update
-sudo apt install lune
-```
+Follow the instructions at the unnoficial [lune-packaging](https://github.com/CompeyDev/lune-packaging#apt) to install lune using APT.
+
+<Callout type="warning" emoji="⚠️">
+  The APT repo is entirely community maintained and is not endorsed by or affiliated with lune.
+</Callout>
+
+
 
 ### AppImage
 AppImages are platform independent sandboxed binaries that work out of the box. Go to the [GitHub Actions Page](https://github.com/CompeyDev/lune-packaging/actions/workflows/appimage.yaml), and download the artifact suitable for your architecture from the build artifacts.
