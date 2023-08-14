@@ -26,14 +26,57 @@ when installing here.
 <details>
 <summary>Community-maintained</summary>
 
+### Scoop
+
+Windows users can use [Scoop](https://scoop.sh) to install Lune.
+
+```ps copy filename="PowerShell"
+# Add the bucket
+scoop bucket add lune https://github.com/CompeyDev/lune-packaging.git
+
+# Install the package
+scoop install lune
+```
+
+### Homebrew
+
+macOS and Linux users can use [Homebrew](https://brew.sh) to install Lune.
+
+```sh copy filename="Bash"
+# Installs latest stable precompiled binary
+brew install lune
+```
+
+***or***
+
+```sh copy filename="Bash"
+# Builds from latest stable source
+brew install lune --build-from-source
+```
+
+### APT
+
+APT is a package manager for Debian-based Linux distributions that uses `dpkg` to install packages. <br/>
+Follow the instructions at the unofficial [lune-packaging](https://github.com/CompeyDev/lune-packaging#apt) repository to install Lune using APT.
+
+<Callout type="warning" emoji="⚠️">
+  The APT repository is hosted by the community and is not endorsed by or affiliated with Lune.
+</Callout>
+
+### AppImage
+
+AppImages are platform independent sandboxed binaries that work out of the box. <br/>
+Go to the [GitHub Actions Page](https://github.com/CompeyDev/lune-packaging/actions/workflows/appimage.yaml), and download the artifact suitable for your architecture from the build artifacts.
+
 ### AUR (Arch User Repository)
+
 There are a number of packages available on the AUR:
 
 - `lune` - Builds from the latest stable release source.
 - `lune-git` - Builds from the latest commit in the repo; unstable.
 - `lune-bin` - Installs a precompiled binary from GitHub Release artifacts.
 
-These can be installed with your favourite AUR manager as such:
+These can be installed with your preferred AUR package manager as such:
 
 ```sh copy filename="Bash"
 paru -S [PACKAGE_NAME]
@@ -49,44 +92,6 @@ yay -S [PACKAGE_NAME]
   Only one of these AUR packages must be installed at a time in order to prevent conflicts.
 </Callout>
 
-
-### Scoop
-Windows users can use [scoop](https://scoop.sh) to install lune.
-
-```ps copy filename="PowerShell"
-# Add the bucket
-scoop bucket add lune https://github.com/CompeyDev/lune-packaging.git
-
-# Install the package
-scoop install lune
-```
-
-### Homebrew
-[Homebrew](https://brew.sh) is a package manager for MacOS and Linux. Lune has been published to Homebrew Core, so it can be installed with:
-
-```sh copy filename="Bash"
-# Installs latest stable precompiled binary
-brew install lune
-```
-
-***or***
-
-```sh copy filename="Bash"
-# Builds from latest stable source
-brew install lune --build-from-source
-```
-
-### APT
-APT is a package manager for debian based distributions that uses dpkg to install packages.
-
-Follow the instructions at the unofficial [lune-packaging](https://github.com/CompeyDev/lune-packaging#apt) repository to install lune using APT.
-
-<Callout type="warning" emoji="⚠️">
-  The APT repository is entirely community maintained and is not endorsed by or affiliated with lune.
-</Callout>
-
-### AppImage
-AppImages are platform independent sandboxed binaries that work out of the box. Go to the [GitHub Actions Page](https://github.com/CompeyDev/lune-packaging/actions/workflows/appimage.yaml), and download the artifact suitable for your architecture from the build artifacts.
 </details>
 
 <details>
