@@ -28,6 +28,11 @@ else
 	name = latestTag
 end
 
+-- Create the temp dir if we don't have one
+if not fs.isDir("temp") then
+	fs.writeDir("temp")
+end
+
 -- Remove any previously downloaded repository folder
 if fs.isDir("temp/repository") then
 	fs.removeDir("temp/repository")
