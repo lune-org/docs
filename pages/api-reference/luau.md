@@ -40,7 +40,7 @@ local bytecode = luau.compile("print('Hello, World!')", {
 
 -   `source` The string that'll be compiled into bytecode
 
--   `CompileOptions` The luau compiler options used when compiling the source string
+-   `compileOptions` The luau compiler options used when compiling the source string
 
 #### Returns
 
