@@ -1,7 +1,8 @@
 import React from "react"
 
 export default {
-	logo: <span>Lune Documentation</span>,
+	logo: <span>Documentation</span>,
+	logoLink: "https://github.com/filiptibell/lune/raw/main/assets/logo/tilt.ico",
 	docsRepositoryBase: "https://github.com/lune-org/docs/blob/main/pages",
 	project: {
 		link: "https://github.com/filiptibell/lune",
