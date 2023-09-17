@@ -1,4 +1,5 @@
 {
+	"datetime": "DateTime",
 	"fs": "FS",
 	"luau": "Luau",
 	"net": "Net",
