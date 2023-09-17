@@ -1,9 +1,8 @@
 import React from "react"
 
 import { useRouter } from "next/router"
-import type { DocsThemeConfig } from "nextra-theme-docs"
 
-const config: DocsThemeConfig = {
+export default {
 	docsRepositoryBase: "https://github.com/lune-org/docs/blob/main",
 	useNextSeoProps() {
 		const { asPath } = useRouter()
@@ -36,5 +35,3 @@ const config: DocsThemeConfig = {
 		</>
 	),
 }
-
-export default config
