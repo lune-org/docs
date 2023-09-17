@@ -20,7 +20,7 @@ export type Function = {
 	params: { FunctionParam },
 	returns: { FunctionReturn },
 	function_type: string,
-	tags: { string },
+	tags: { string }?,
 	source: Source,
 }
 
@@ -28,7 +28,7 @@ export type Property = {
 	name: string,
 	desc: string,
 	lua_type: string,
-	tags: { string },
+	tags: { string }?,
 	source: Source,
 }
 

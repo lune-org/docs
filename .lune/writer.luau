@@ -1,5 +1,12 @@
 local moonwave = require("./moonwave")
 
+local function trim(s: string): string
+	local result = s
+	result = string.gsub(result, "^%s+", "")
+	result = string.gsub(result, "%s+$", "")
+	return result
+end
+
 local buffer = {}
 local function write(text: string)
 	table.insert(buffer, text)
@@ -25,7 +32,7 @@ local function writeTypeAndDesc(typ: string, desc: string, inline: boolean)
 			if inline then
 				write(" ")
 			end
-			write("`" .. typ .. "`")
+			write("`" .. trim(typ) .. "`")
 			if not inline then
 				write("\n\n")
 			end
@@ -62,6 +69,16 @@ local function writeReturns(returns: { moonwave.FunctionReturn })
 	end
 end
 
+local function writeFunctions(fns: { moonwave.Function })
+	for _, fn in fns do
+		write(`### {fn.name}\n\n`)
+		writeDesc(fn.desc)
+		writeParams(fn.params)
+		writeReturns(fn.returns)
+		write(`---\n\n`)
+	end
+end
+
 local function writeMarkdown(item: moonwave.Item)
 	write(`# {item.name}\n\n`)
 	writeDesc(item.desc)
@@ -77,13 +94,29 @@ local function writeMarkdown(item: moonwave.Item)
 	end
 
 	if #item.functions > 0 then
-		write(`## Functions\n\n`)
+		local foundStatic = {}
+		local foundConstructors = {}
+		local foundMethods = {}
 		for _, fn in item.functions do
-			write(`### {fn.name}\n\n`)
-			writeDesc(fn.desc)
-			writeParams(fn.params)
-			writeReturns(fn.returns)
-			write(`---\n\n`)
+			if fn.tags ~= nil and table.find(fn.tags, "Constructor") ~= nil then
+				table.insert(foundConstructors, fn)
+			elseif fn.tags ~= nil and table.find(fn.tags, "Method") ~= nil then
+				table.insert(foundMethods, fn)
+			else
+				table.insert(foundStatic, fn)
+			end
+		end
+		if #foundStatic > 0 then
+			write(`## Functions\n\n`)
+			writeFunctions(foundStatic)
+		end
+		if #foundConstructors > 0 then
+			write(`## Constructors\n\n`)
+			writeFunctions(foundConstructors)
+		end
+		if #foundMethods > 0 then
+			write(`## Methods\n\n`)
+			writeFunctions(foundMethods)
 		end
 	end
 

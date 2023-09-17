@@ -40,13 +40,127 @@ DateTime.fromUnixTimestamp(871978212313.321)
 print(now:toUniversalTime())
 ```
 
-## Functions
+## Constructors
 
-### toIsoDate
+### now
 
-Formats this `DateTime` as an ISO 8601 date-time string.
+Returns a `DateTime` representing the current moment in time.
 
-Some examples of ISO 8601 date-time strings:
+#### Returns
+
+-   `DateTime` The new DateTime object
+
+---
+
+### fromUnixTimestamp
+
+Creates a new `DateTime` from the given UNIX timestamp.
+
+This timestamp may contain both a whole and fractional part - where the fractional part denotes
+milliseconds / nanoseconds.
+
+Example usage of fractions:
+
+-   `DateTime.fromUnixTimestamp(123456789.001)` - one millisecond
+-   `DateTime.fromUnixTimestamp(123456789.000000001)` - one nanosecond
+
+Note that the fractional part has limited precision down to exactly one nanosecond, any fraction
+that is more precise will get truncated.
+
+#### Parameters
+
+-   `unixTimestamp` `number` Seconds passed since the UNIX epoch
+
+#### Returns
+
+-   `DateTime` The new DateTime object
+
+---
+
+### fromUniversalTime
+
+Creates a new `DateTime` from the given date & time values table, in universal (UTC) time.
+
+The given table must contain the following values:
+
+| Key      | Type     | Range          |
+| -------- | -------- | -------------- |
+| `year`   | `number` | `1400 -> 9999` |
+| `month`  | `number` | `1 -> 12`      |
+| `day`    | `number` | `1 -> 31`      |
+| `hour`   | `number` | `0 -> 23`      |
+| `minute` | `number` | `0 -> 59`      |
+| `second` | `number` | `0 -> 60`      |
+
+An additional `millisecond` value may also be included, and should be within the range `0 -> 999`,
+but is optional.
+
+Any non-integer values in the given table will be rounded down.
+
+#### Errors
+
+This constructor is fallible and may throw an error in the following situations:
+
+-   Date units (year, month, day) were given that produce an invalid date. For example, January 32nd
+    or February 29th on a non-leap year.
+
+#### Parameters
+
+-   `values` `DateTimeValueArguments` Table containing date & time values
+
+#### Returns
+
+-   `DateTime` The new DateTime object
+
+---
+
+### fromLocalTime
+
+Creates a new `DateTime` from the given date & time values table, in local time.
+
+The given table must contain the following values:
+
+| Key      | Type     | Range          |
+| -------- | -------- | -------------- |
+| `year`   | `number` | `1400 -> 9999` |
+| `month`  | `number` | `1 -> 12`      |
+| `day`    | `number` | `1 -> 31`      |
+| `hour`   | `number` | `0 -> 23`      |
+| `minute` | `number` | `0 -> 59`      |
+| `second` | `number` | `0 -> 60`      |
+
+An additional `millisecond` value may also be included, and should be within the range `0 -> 999`,
+but is optional.
+
+Any non-integer values in the given table will be rounded down.
+
+#### Errors
+
+This constructor is fallible and may throw an error in the following situations:
+
+-   Date units (year, month, day) were given that produce an invalid date. For example, January 32nd
+    or February 29th on a non-leap year.
+
+#### Parameters
+
+-   `values` `DateTimeValueArguments` Table containing date & time values
+
+#### Returns
+
+-   `DateTime` The new DateTime object
+
+---
+
+### fromIsoDate
+
+Creates a new `DateTime` from an ISO 8601 date-time string.
+
+#### Errors
+
+This constructor is fallible and may throw an error if the given string does not strictly follow the
+ISO 8601 date-time string format.
+
+Some examples of valid ISO 8601 date-time strings are:
 
 -   `2020-02-22T18:12:08Z`
 -   `2000-01-31T12:34:56+05:00`
@@ -54,65 +168,15 @@ Some examples of ISO 8601 date-time strings:
 
 #### Parameters
 
--   `self` DateTime
+-   `isoDate` `string` An ISO 8601 formatted string
 
 #### Returns
 
--   `string` The ISO 8601 formatted string
+-   `DateTime` The new DateTime object
 
 ---
 
-### toLocalTime
-
-Extracts local time values from this `DateTime`.
-
-The returned table contains the following values:
-
-| Key           | Type     | Range          |
-| ------------- | -------- | -------------- |
-| `year`        | `number` | `1400 -> 9999` |
-| `month`       | `number` | `1 -> 12`      |
-| `day`         | `number` | `1 -> 31`      |
-| `hour`        | `number` | `0 -> 23`      |
-| `minute`      | `number` | `0 -> 59`      |
-| `second`      | `number` | `0 -> 60`      |
-| `millisecond` | `number` | `0 -> 999`     |
-
-#### Parameters
-
--   `self` DateTime
-
-#### Returns
-
--   `DateTimeValues` A table of DateTime values
-
----
-
-### toUniversalTime
-
-Extracts UTC (universal) time values from this `DateTime`.
-
-The returned table contains the following values:
-
-| Key           | Type     | Range          |
-| ------------- | -------- | -------------- |
-| `year`        | `number` | `1400 -> 9999` |
-| `month`       | `number` | `1 -> 12`      |
-| `day`         | `number` | `1 -> 31`      |
-| `hour`        | `number` | `0 -> 23`      |
-| `minute`      | `number` | `0 -> 59`      |
-| `second`      | `number` | `0 -> 60`      |
-| `millisecond` | `number` | `0 -> 999`     |
-
-#### Parameters
-
--   `self` DateTime
-
-#### Returns
-
--   `DateTimeValues` A table of DateTime values
-
----
+## Methods
 
 ### formatLocalTime
 
@@ -178,7 +242,7 @@ If not provided, `formatString` and `locale` will default to `"%Y-%m-%d %H:%M:%S
 
 -   `formatString` `string?` A string containing formatting tokens
 
--   `locale` `Locale? ` The locale the time should be formatted in
+-   `locale` `Locale?` The locale the time should be formatted in
 
 #### Returns
 
@@ -186,119 +250,11 @@ If not provided, `formatString` and `locale` will default to `"%Y-%m-%d %H:%M:%S
 
 ---
 
-### now
+### toIsoDate
 
-Returns a `DateTime` representing the current moment in time.
+Formats this `DateTime` as an ISO 8601 date-time string.
 
-#### Returns
-
--   `DateTime` The new DateTime object
-
----
-
-### fromUnixTimestamp
-
-Creates a new `DateTime` from the given UNIX timestamp.
-
-This timestamp may contain both a whole and fractional part - where the fractional part denotes
-milliseconds / nanoseconds.
-
-Example usage of fractions:
-
--   `DateTime.fromUnixTimestamp(123456789.001)` - one millisecond
--   `DateTime.fromUnixTimestamp(123456789.000000001)` - one nanosecond
-
-Note that the fractional part has limited precision down to exactly one nanosecond, any fraction
-that is more precise will get truncated.
-
-#### Parameters
-
--   `unixTimestamp` `number` Seconds passed since the UNIX epoch
-
-#### Returns
-
--   `DateTime` The new DateTime object
-
----
-
-### fromUniversalTime
-
-Creates a new `DateTime` from the given date & time values table, in universal (UTC) time.
-
-The given table must contains the following values:
-
-| Key      | Type     | Range          |
-| -------- | -------- | -------------- |
-| `year`   | `number` | `1400 -> 9999` |
-| `month`  | `number` | `1 -> 12`      |
-| `day`    | `number` | `1 -> 31`      |
-| `hour`   | `number` | `0 -> 23`      |
-| `minute` | `number` | `0 -> 59`      |
-| `second` | `number` | `0 -> 60`      |
-
-An additional `millisecond` value may also be included, and should be within the range `0 -> 999`,
-but is optional.
-
-This constructor is fallible and may throw an error in the following situations:
-
--   Date units (year, month, day) that produce an invalid date will raise an error. For example,
-    January 32nd or February 29th on a non-leap year.
--   Non-integer values are rounded down. For example, providing 2.5 hours is equivalent to providing
-    2 hours, not 2 hours and 30 minutes.
-
-#### Parameters
-
--   `values` `DateTimeValues` Table containing date & time values
-
-#### Returns
-
--   `DateTime` The new DateTime object
-
----
-
-### fromLocalTime
-
-Creates a new `DateTime` from the given date & time values table, in local time.
-
-The given table must contains the following values:
-
-| Key      | Type     | Range          |
-| -------- | -------- | -------------- |
-| `year`   | `number` | `1400 -> 9999` |
-| `month`  | `number` | `1 -> 12`      |
-| `day`    | `number` | `1 -> 31`      |
-| `hour`   | `number` | `0 -> 23`      |
-| `minute` | `number` | `0 -> 59`      |
-| `second` | `number` | `0 -> 60`      |
-
-An additional `millisecond` value may also be included, and should be within the range `0 -> 999`,
-but is optional.
-
-This constructor is fallible and may throw an error in the following situations:
-
--   Date units (year, month, day) that produce an invalid date will raise an error. For example,
-    January 32nd or February 29th on a non-leap year.
--   Non-integer values are rounded down. For example, providing 2.5 hours is equivalent to providing
-    2 hours, not 2 hours and 30 minutes.
-
-#### Parameters
-
--   `values` `DateTimeValues` Table containing date & time values
-
-#### Returns
-
--   `DateTime` The new DateTime object
-
----
-
-### fromIsoDate
-
-Creates a new `DateTime` from an ISO 8601 date-time string.
-
-This constructor is fallible and may throw an error if the given string does not strictly follow the
-ISO 8601 date-time string format.
-
-Some examples of valid ISO 8601 date-time strings:
+Some examples of ISO 8601 date-time strings are:
 
 -   `2020-02-22T18:12:08Z`
 -   `2000-01-31T12:34:56+05:00`
@@ -306,10 +262,120 @@ Some examples of valid ISO 8601 date-time strings:
 
 #### Parameters
 
--   `isoDate` `string` An ISO 8601 formatted string
+-   `self` DateTime
 
 #### Returns
 
--   `DateTime` The new DateTime object
+-   `string` The ISO 8601 formatted string
+
+---
+
+### toLocalTime
+
+Extracts separated local date & time values from this `DateTime`.
+
+The returned table contains the following values:
+
+| Key           | Type     | Range          |
+| ------------- | -------- | -------------- |
+| `year`        | `number` | `1400 -> 9999` |
+| `month`       | `number` | `1 -> 12`      |
+| `day`         | `number` | `1 -> 31`      |
+| `hour`        | `number` | `0 -> 23`      |
+| `minute`      | `number` | `0 -> 59`      |
+| `second`      | `number` | `0 -> 60`      |
+| `millisecond` | `number` | `0 -> 999`     |
+
+#### Parameters
+
+-   `self` DateTime
+
+#### Returns
+
+-   `DateTimeValueReturns` A table of DateTime values
+
+---
+
+### toUniversalTime
+
+Extracts separated UTC (universal) date & time values from this `DateTime`.
+
+The returned table contains the following values:
+
+| Key           | Type     | Range          |
+| ------------- | -------- | -------------- |
+| `year`        | `number` | `1400 -> 9999` |
+| `month`       | `number` | `1 -> 12`      |
+| `day`         | `number` | `1 -> 31`      |
+| `hour`        | `number` | `0 -> 23`      |
+| `minute`      | `number` | `0 -> 59`      |
+| `second`      | `number` | `0 -> 60`      |
+| `millisecond` | `number` | `0 -> 999`     |
+
+#### Parameters
+
+-   `self` DateTime
+
+#### Returns
+
+-   `DateTimeValueReturns` A table of DateTime values
+
+---
+
+## Types
+
+### Locale
+
+Enum type representing supported DateTime locales.
+
+Currently supported locales are:
+
+-   `en` - English
+-   `de` - German
+-   `es` - Spanish
+-   `fr` - French
+-   `it` - Italian
+-   `ja` - Japanese
+-   `pl` - Polish
+-   `pt-br` - Brazilian Portuguese
+-   `pt` - Portuguese
+-   `tr` - Turkish
+
+---
+
+### DateTimeValues
+
+Individual date & time values, representing the primitives that make up a `DateTime`.
+
+This is a dictionary that will contain the following values:
+
+-   `year` - Year(s), in the range 1400 -> 9999
+-   `month` - Month(s), in the range 1 -> 12
+-   `day` - Day(s), in the range 1 -> 31
+-   `hour` - Hour(s), in the range 0 -> 23
+-   `minute` - Minute(s), in the range 0 -> 59
+-   `second` - Second(s), in the range 0 -> 60, where 60 is a leap second
+
+An additional `millisecond` value may also be included, and should be within the range `0 -> 999`,
+but is optional.
+
+However, any method returning this type should be guaranteed to include milliseconds - see
+individual methods to verify.
+
+---
+
+### DateTimeValueArguments
+
+Alias for `DateTimeValues` with an optional `millisecond` value.
+
+Refer to the `DateTimeValues` documentation for additional information.
+
+---
+
+### DateTimeValueReturns
+
+Alias for `DateTimeValues` with a mandatory `millisecond` value.
+
+Refer to the `DateTimeValues` documentation for additional information.
 
 ---
