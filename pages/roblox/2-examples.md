@@ -26,8 +26,8 @@ for _, descendant in workspace:GetDescendants() do
 end
 
 -- Save the DataModel (game) back to the file that we read it from
-file = roblox.serializePlace("myPlaceFile.rbxl")
-fs.writeFile(file)
+file = roblox.serializePlace(game)
+fs.writeFile("myPlaceFile.rbxl", file)
 ```
 
 ---
