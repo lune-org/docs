@@ -103,6 +103,10 @@ Setting the exit code using this function will override any otherwise automatic 
 
 -   `code` The exit code to set
 
+#### Returns
+
+-   never
+
 ---
 
 ### spawn
@@ -141,6 +145,7 @@ A dictionary of options for `process.spawn`, with the following available values
     string to run using a specific shell
 -   `stdio` - How to treat output and error streams from the child process - set to "inherit" to
     pass output and error streams to the current process
+-   `stdin` - Optional standard input to pass to spawned child process
 
 ---
 
