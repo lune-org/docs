@@ -103,6 +103,8 @@ The Luau load options are used for generating a lua function from either bytecod
 
 This is a dictionary that may contain one or more of the following values:
 
--   `debugName` - The debug name of the closure. Defaults to `string ["..."]`
+-   `debugName` - The debug name of the closure. Defaults to `luau.load(...)`
+-   `environment` - Environment values to set and/or override. Includes default globals unless
+    overwritten.
 
 ---

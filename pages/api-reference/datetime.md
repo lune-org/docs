@@ -14,7 +14,7 @@ local now = DateTime.now()
 print(now:toIsoDate())
 
 -- Formats the current moment in time, using the local
--- time, the Frech locale, and the specified time string
+-- time, the French locale, and the specified time string
 print(now:formatLocalTime("%A, %d %B %Y", "fr"))
 
 -- Returns a specific moment in time as a DateTime instance

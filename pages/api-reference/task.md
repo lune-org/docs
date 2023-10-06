@@ -58,11 +58,9 @@ Defers a thread or function to run at the end of the current task queue.
 
 Delays a thread or function to run after `duration` seconds.
 
-If no `duration` is given, this will wait for the minimum amount of time possible.
-
 #### Parameters
 
--   `duration` number?
+-   `duration` number
 
 -   `functionOrThread` The function or thread to delay
 
