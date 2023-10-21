@@ -211,3 +211,103 @@ end
 -   Database
 
 ---
+
+### implementProperty
+
+Implements a property for all instances of the given `className`.
+
+This takes into account class hierarchies, so implementing a property for the `BasePart` class will
+also implement it for `Part` and others, unless a more specific implementation is added to the
+`Part` class directly.
+
+#### Behavior
+
+The given `getter` callback will be called each time the property is indexed, with the instance as
+its one and only argument. The `setter` callback, if given, will be called each time the property
+should be set, with the instance as the first argument and the property value as second.
+
+#### Example usage
+
+```lua
+local roblox = require("@lune/roblox")
+
+local part = roblox.Instance.new("Part")
+
+local propertyValues = {}
+roblox.implementProperty(
+	"BasePart",
+	"CoolProp",
+	function(instance)
+		if propertyValues[instance] == nil then
+			propertyValues[instance] = 0
+		end
+		propertyValues[instance] += 1
+		return propertyValues[instance]
+	end,
+	function(instance, value)
+		propertyValues[instance] = value
+	end
+)
+
+print(part.CoolProp) --> 1
+print(part.CoolProp) --> 2
+print(part.CoolProp) --> 3
+
+part.CoolProp = 10
+
+print(part.CoolProp) --> 11
+print(part.CoolProp) --> 12
+print(part.CoolProp) --> 13
+```
+
+#### Parameters
+
+-   `className` The class to implement the property for.
+
+-   `propertyName` The name of the property to implement.
+
+-   `getter` The function which will be called to get the property value when indexed.
+
+-   `setter` The function which will be called to set the property value when indexed. Defaults to a
+    function that will error with a message saying the property is read-only.
+
+---
+
+### implementMethod
+
+Implements a method for all instances of the given `className`.
+
+This takes into account class hierarchies, so implementing a method for the `BasePart` class will
+also implement it for `Part` and others, unless a more specific implementation is added to the
+`Part` class directly.
+
+#### Behavior
+
+The given `callback` will be called every time the method is called, and will receive the instance
+it was called on as its first argument. The remaining arguments will be what the caller passed to
+the method, and all values returned from the callback will then be returned to the caller.
+
+#### Example usage
+
+```lua
+local roblox = require("@lune/roblox")
+
+local part = roblox.Instance.new("Part")
+
+roblox.implementMethod("BasePart", "TestMethod", function(instance, ...)
+    print("Called TestMethod on instance", instance, "with", ...)
+end)
+
+part:TestMethod("Hello", "world!")
+--> Called TestMethod on instance Part with Hello, world!
+```
+
+#### Parameters
+
+-   `className` The class to implement the method for.
+
+-   `methodName` The name of the method to implement.
+
+-   `callback` The function which will be called when the method is called.
+
+---
