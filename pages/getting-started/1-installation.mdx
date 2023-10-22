@@ -95,8 +95,9 @@ yay -S [PACKAGE_NAME]
 </details>
 
 <details>
-<summary>Building from source</summary>
+<summary>crates.io</summary>
 
+### Building from source
 Building and installing from source requires the latest version of
 [Rust & Cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html) to be installed on
 your system. <br /> Once installed, run the following command in your terminal:
@@ -104,6 +105,16 @@ your system. <br /> Once installed, run the following command in your terminal:
 ```sh copy filename="Bash"
 cargo install lune --locked
 ```
+### Binstall
+[`cargo binstall`](https://github.com/cargo-bins/cargo-binstall) provides a simple mechanism for installing rust binaries from crates.io, without
+compiling from source unlike `cargo install`. Lune is packaged in a `binstall` compatible way.
+
+With `binstall` installed and in your path, run:
+```sh copy filename="Bash"
+cargo binstall lune
+```
+
+
 </details>
 
 ## Next Steps
