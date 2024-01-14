@@ -5,7 +5,7 @@
 When you've written a script file, for example `script-name.luau`, you can run it as such:
 
 ```sh copy
-lune script-name
+lune run script-name
 ```
 
 This will look for the file `script-name.luau`**_<sup>[1]</sup>_** in a few locations:
@@ -19,7 +19,7 @@ This will look for the file `script-name.luau`**_<sup>[1]</sup>_** in a few loca
 ## Listing Scripts
 
 ```sh copy
-lune --list
+lune list
 ```
 
 Lists all scripts found in `lune` or `.lune` directories, including any top-level description
@@ -29,14 +29,14 @@ lua-style comment arrow (`-->`).
 ## Advanced Usage
 
 ```sh copy
-lune -
+lune run -
 ```
 
 Runs a script passed to Lune using stdin. Useful for running scripts piped to Lune from external
 sources. Example:
 
 ```sh copy
-echo "print 'Hello, terminal!'" | lune -
+echo "print 'Hello, terminal!'" | lune run -
 ```
 
 ---

@@ -2,9 +2,9 @@
 
 local fs = require("@lune/fs")
 local net = require("@lune/net")
-local serde = require("@lune/serde")
 local process = require("@lune/process")
 local roblox = require("@lune/roblox")
+local serde = require("@lune/serde")
 
 export type LuneDataModel = roblox.DataModel
 export type LuneInstance = roblox.Instance
@@ -140,13 +140,15 @@ local function uploadAssetId(assetId: number, contents: string)
 	})
 
 	local csrfToken = csrfResponse.headers["x-csrf-token"]
-	if csrfToken == nil then error('Failed to fetch CSRF token.') end
+	if csrfToken == nil then
+		error("Failed to fetch CSRF token.")
+	end
 
 	-- 3. Upload the asset to Roblox
 	local uploadHeaders = {
 		["User-Agent"] = "Roblox/WinInet",
 		["Content-Type"] = "application/octet-stream",
-		['X-CSRF-Token'] = csrfToken,
+		["X-CSRF-Token"] = csrfToken,
 		Accept = "application/json",
 		Cookie = cookie,
 	}

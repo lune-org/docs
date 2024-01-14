@@ -6,13 +6,13 @@ install-dev-tools:
 
 # Extract documentation from the main repository using moonwave
 extract-documentation COMMIT="":
-	lune download "{{COMMIT}}"
-	lune extract
-	lune generate
+	lune run download "{{COMMIT}}"
+	lune run extract
+	lune run generate
 
 # Re-generates documentation from the main repository using moonwave
 generate-documentation:
-	lune generate
+	lune run generate
 
 # Builds and generates a static site directory
 build:

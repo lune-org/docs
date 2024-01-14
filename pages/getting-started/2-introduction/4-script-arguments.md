@@ -3,7 +3,7 @@
 Arguments can be passed to Lune scripts directly from the command line when running them:
 
 ```sh copy filename="Bash"
-lune script-name arg1 arg2 "argument three"
+lune run script-name arg1 arg2 "argument three"
 ```
 
 These arguments will then be available in your script using the
