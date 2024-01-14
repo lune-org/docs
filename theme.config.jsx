@@ -13,13 +13,13 @@ export default {
 		}
 	},
 	project: {
-		link: "https://github.com/filiptibell/lune",
+		link: "https://github.com/lune-org/lune",
 	},
 	footer: {
 		text: (
 			<span>
 				MPL-2.0 {new Date().getFullYear()} ©{" "}
-				<a href="https://github.com/filiptibell/lune" target="_blank">
+				<a href="https://github.com/lune-org/lune" target="_blank">
 					Lune
 				</a>
 			</span>
@@ -30,7 +30,7 @@ export default {
 			<img
 				width="40"
 				height="40"
-				src="https://github.com/filiptibell/lune/raw/main/assets/logo/tilt.png"
+				src="https://github.com/lune-org/lune/raw/main/assets/logo/tilt.png"
 			/>
 		</>
 	),

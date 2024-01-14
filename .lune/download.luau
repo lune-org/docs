@@ -1,4 +1,4 @@
-local MAIN_REPOSITORY_URL = "https://github.com/filiptibell/lune"
+local MAIN_REPOSITORY_URL = "https://github.com/lune-org/lune"
 
 local fs = require("@lune/fs")
 local net = require("@lune/net")

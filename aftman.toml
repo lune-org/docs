@@ -1,5 +1,5 @@
 [tools]
 just = "readysetplay/just@1.8.0"
 luau-lsp = "JohnnyMorganz/luau-lsp@1.27.0"
-lune = "filiptibell/lune@0.8.0"
+lune = "lune-org/lune@0.8.0"
 stylua = "JohnnyMorganz/StyLua@0.19.1"
