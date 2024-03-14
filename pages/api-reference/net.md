@@ -230,12 +230,28 @@ This is a dictionary that may contain one or more of the following values:
 
 Configuration for `net.serve`.
 
-This may contain one of, or both of the following callbacks:
+This may contain one of or more of the following values:
 
+-   `address` for setting the IP address to serve from. Defaults to the loopback interface
+    (`http://localhost`).
 -   `handleRequest` for handling normal http requests, equivalent to just passing a function to
     `net.serve`
 -   `handleWebSocket` for handling web socket requests, which will receive a `WebSocket` object as
     its first and only parameter
+
+When setting `address`, the `handleRequest` callback must also be defined.
+
+```lua
+	net.serve(8080, {
+		address = "http://0.0.0.0",
+		handleRequest = function(request)
+			return {
+				status = 200,
+				body = "Echo:\n" .. request.body,
+			}
+		end
+	})
+```
 
 ---
 
