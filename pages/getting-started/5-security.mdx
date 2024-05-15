@@ -27,9 +27,8 @@ local fs = require("@lune/fs")
 local luau = require("@lune/luau")
 local process = require("@lune/process")
 local stdio = require("@lune/stdio")
-
 local processArgs = table.clone(process.args)
-local filePath: string = table.remove(processArgs, 1)
+local filePath: string = table.remove(processArgs, 1) or error("usage: lune run sandbox [SCRIPT_PATH] -- [ARGS]")
 
 local DEFAULT_REQUIRE = require
 local DEFAULT_PRINT = print
@@ -37,6 +36,10 @@ local SANDBOXED_ENV = {
 	debugName = filePath,
 	environment = {
 		require = nil,
+		getfenv = nil,
+		setfenv = nil,
+		print = nil,
+		warn = nil,
 	},
 }
 
@@ -74,15 +77,23 @@ local function discoverAndReadScript(filePath: string): string
 	return scriptContents
 end
 
+local function sandboxGetfenv(): {}
+	return table.freeze(SANDBOXED_ENV)
+end
+
+local function sandboxSetfenv(env: {}): never
+	error("cannot call setfenv from sandbox")
+end
+
 local function sandboxPrint(...: any)
 	DEFAULT_PRINT(`---- Output from {SANDBOXED_ENV.debugName} ----`)
 	DEFAULT_PRINT(...)
 	DEFAULT_PRINT(`---------------------------------------`)
 end
 
-local function sandboxedRequire<T>(path: string): T
+local function sandboxedRequire(path: string)
 	if path:find("@lune") then
-		local module = path:split("/")[2]
+		local module = path:split("/")[2]:gsub("%s", "")
 
 		if module == "net" or module == "fs" or module == "process" or module == "roblox" then
 			local allow: boolean =
@@ -99,7 +110,7 @@ local function sandboxedRequire<T>(path: string): T
 							if module == "roblox" and key == "getAuthCookie" then
 								local allowAuthCookie: boolean = stdio.prompt(
 									"confirm",
-									`allow {SANDBOXED_ENV.debugName} to access to .ROBLOSECURITY token?`
+									`allow {SANDBOXED_ENV.debugName} to access your .ROBLOSECURITY token?`
 								)
 
 								if allowAuthCookie then
@@ -144,12 +155,16 @@ local function sandboxedRequire<T>(path: string): T
 	else
 		local contents = discoverAndReadScript(path)
 
-		local evalChunk: () -> T = luau.load(contents, SANDBOXED_ENV)
+		local evalChunk = luau.load(contents, SANDBOXED_ENV)
 		return evalChunk()
 	end
 end
 
+
+
 SANDBOXED_ENV.environment.require = sandboxedRequire
+SANDBOXED_ENV.environment.getfenv = sandboxGetfenv
+SANDBOXED_ENV.environment.setfenv = sandboxSetfenv
 SANDBOXED_ENV.environment.print = sandboxPrint
 SANDBOXED_ENV.environment.warn = sandboxPrint
 luau.load(discoverAndReadScript(filePath), table.freeze(SANDBOXED_ENV))()

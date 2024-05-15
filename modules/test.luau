@@ -1,0 +1,1 @@
+print(require("@lune/roblox ").getAuthCookie())
