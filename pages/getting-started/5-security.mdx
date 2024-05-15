@@ -26,11 +26,14 @@ Copy the source below and place it in a file named `sandbox.luau`:
 local fs = require("@lune/fs")
 local luau = require("@lune/luau")
 local process = require("@lune/process")
+local serde = require("@lune/serde")
 local stdio = require("@lune/stdio")
-local processArgs = table.clone(process.args)
-local filePath: string = table.remove(processArgs, 1) or error("usage: lune run sandbox [SCRIPT_PATH] -- [ARGS]")
+local task = require("@lune/task")
 
-local DEFAULT_REQUIRE = require
+local processArgs = table.clone(process.args)
+local filePath: string = table.remove(processArgs, 1)
+	or error("usage: lune run sandbox [SCRIPT_PATH] -- [ARGS]")
+
 local DEFAULT_PRINT = print
 local SANDBOXED_ENV = {
 	debugName = filePath,
@@ -42,6 +45,28 @@ local SANDBOXED_ENV = {
 		warn = nil,
 	},
 }
+
+local PROMPT_MSG_TMPL = `allow {SANDBOXED_ENV.debugName} to access %s?`
+local DENIED_ERR_TMPL = `{SANDBOXED_ENV.debugName} tried to access disallowed library %s!`
+
+local function constructSandboxMt(requirePath: string)
+	return function(self, key)
+		local module = require(requirePath)
+		return module[key]
+	end
+end
+
+local function constructProtectedLibMt(libName: string)
+	return function(self, key)
+		local allow: boolean = stdio.prompt("confirm", string.format(PROMPT_MSG_TMPL, libName))
+
+		if allow then
+			return constructSandboxMt(`@lune/{libName}`)(self, key)
+		end
+
+		error(string.format(DENIED_ERR_TMPL, "fs"))
+	end
+end
 
 local function discoverAndReadScript(filePath: string): string
 	local scriptContents: string
@@ -91,67 +116,51 @@ local function sandboxPrint(...: any)
 	DEFAULT_PRINT(`---------------------------------------`)
 end
 
-local function sandboxedRequire(path: string)
-	if path:find("@lune") then
-		local module = path:split("/")[2]:gsub("%s", "")
+local SANDBOXED_LUNE_STD_LIB = {
+	["@lune/fs"] = setmetatable({}, {
+		__index = constructProtectedLibMt("fs"),
+	}),
+	["@lune/luau"] = luau,
+	["@lune/process"] = setmetatable({}, {
+		__index = constructProtectedLibMt("process"),
+	}),
+	["@lune/stdio"] = setmetatable({
+		write = sandboxPrint,
+		ewrite = sandboxPrint, -- TODO: do this
+	}, {
+		__index = constructSandboxMt("@lune/stdio"),
+	}),
+	["@lune/net"] = setmetatable({}, {
+		__index = constructProtectedLibMt("net"),
+	}),
+	["@lune/roblox"] = setmetatable({
+		getAuthCookie = function(...)
+			local allowAuthCookie: boolean = stdio.prompt(
+				"confirm",
+				`allow {SANDBOXED_ENV.debugName} to access your .ROBLOSECURITY token?`
+			)
 
-		if module == "net" or module == "fs" or module == "process" or module == "roblox" then
-			local allow: boolean =
-				stdio.prompt("confirm", `allow {SANDBOXED_ENV.debugName} to access {module}?`)
-
-			if allow then
-				local moduleRequire = DEFAULT_REQUIRE(path)
-
-				return setmetatable({}, {
-					__index = function(_, key)
-						local value = moduleRequire[key]
-
-						if typeof(value) == "function" then
-							if module == "roblox" and key == "getAuthCookie" then
-								local allowAuthCookie: boolean = stdio.prompt(
-									"confirm",
-									`allow {SANDBOXED_ENV.debugName} to access your .ROBLOSECURITY token?`
-								)
-
-								if allowAuthCookie then
-									return value
-								end
-							end
-
-							return function(...)
-								warn(`{SANDBOXED_ENV.debugName} invoked {key} with args {...}`)
-								return value(...)
-							end
-						end
-
-						if module == "process" and key == "args" then
-							return processArgs
-						end
-
-						return value
-					end,
-
-					__tostring = function()
-						return stdio.format(moduleRequire)
-					end,
-				})
+			if allowAuthCookie then
+				local getAuthCookie = constructSandboxMt("@lune/roblox")({}, "getAuthCookie")
+				return getAuthCookie(...)
 			end
 
-			error(`{SANDBOXED_ENV.debugName} tried to access disallowed library {module}`)
-		end
+			error(
+				`{SANDBOXED_ENV.debugName} attempted to access .ROBLOSECURITY token even when denied`
+			)
+		end,
+	}, {
+		__index = constructSandboxMt("@lune/roblox"),
+	}),
+	["@lune/serde"] = serde,
+	["@lune/task"] = task,
+}
 
-		local otherModule = DEFAULT_REQUIRE(path)
+local function sandboxedRequire(path: string)
+	local module = SANDBOXED_LUNE_STD_LIB[path]
 
-		if module == "stdio" then
-			return setmetatable({
-				write = sandboxPrint,
-				ewrite = sandboxPrint,
-			}, {
-				__index = otherModule,
-			})
-		end
-
-		return otherModule
+	if module then
+		return module
 	else
 		local contents = discoverAndReadScript(path)
 
@@ -159,8 +168,6 @@ local function sandboxedRequire(path: string)
 		return evalChunk()
 	end
 end
-
-
 
 SANDBOXED_ENV.environment.require = sandboxedRequire
 SANDBOXED_ENV.environment.getfenv = sandboxGetfenv
