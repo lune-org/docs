@@ -4,6 +4,8 @@ local process = require("@lune/process")
 local serde = require("@lune/serde")
 local stdio = require("@lune/stdio")
 local task = require("@lune/task")
+local regex = require("@lune/regex")
+local datetime = require("@lune/datetime")
 
 local processArgs = table.clone(process.args)
 local filePath: string = table.remove(processArgs, 1)
@@ -95,7 +97,9 @@ local SANDBOXED_LUNE_STD_LIB = {
 	["@lune/fs"] = setmetatable({}, {
 		__index = constructProtectedLibMt("fs"),
 	}),
-	["@lune/luau"] = luau,
+	["@lune/luau"] = setmetatable({}, {
+		__index = constructProtectedLibMt("luau")
+	}),
 	["@lune/process"] = setmetatable({}, {
 		__index = constructProtectedLibMt("process"),
 	}),
@@ -129,6 +133,8 @@ local SANDBOXED_LUNE_STD_LIB = {
 	}),
 	["@lune/serde"] = serde,
 	["@lune/task"] = task,
+	["@lune/regex"] = regex,
+	["@lune/datetime"] = datetime,
 }
 
 local function sandboxedRequire(path: string)
