@@ -105,7 +105,7 @@ local SANDBOXED_LUNE_STD_LIB = {
 	}),
 	["@lune/stdio"] = setmetatable({
 		write = sandboxPrint,
-		ewrite = sandboxPrint, -- TODO: do this
+		ewrite = sandboxPrint,
 	}, {
 		__index = constructSandboxMt("@lune/stdio"),
 	}),
