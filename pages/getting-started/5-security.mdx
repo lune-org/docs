@@ -23,14 +23,16 @@ Copy the source below and place it in a file named `sandbox.luau`:
 <summary>Click to expand</summary>
 
 ```lua copy
+local datetime = require("@lune/datetime")
 local fs = require("@lune/fs")
 local luau = require("@lune/luau")
+local net = require("@lune/net")
 local process = require("@lune/process")
+local regex = require("@lune/regex")
+local roblox = require("@lune/roblox")
 local serde = require("@lune/serde")
 local stdio = require("@lune/stdio")
 local task = require("@lune/task")
-local regex = require("@lune/regex")
-local datetime = require("@lune/datetime")
 
 local processArgs = table.clone(process.args)
 local filePath: string = table.remove(processArgs, 1)
@@ -50,25 +52,6 @@ local SANDBOXED_ENV = {
 
 local PROMPT_MSG_TMPL = `allow {SANDBOXED_ENV.debugName} to access %s?`
 local DENIED_ERR_TMPL = `{SANDBOXED_ENV.debugName} tried to access disallowed library %s!`
-
-local function constructSandboxMt(requirePath: string)
-	return function(self, key)
-		local module = require(requirePath)
-		return module[key]
-	end
-end
-
-local function constructProtectedLibMt(libName: string)
-	return function(self, key)
-		local allow: boolean = stdio.prompt("confirm", string.format(PROMPT_MSG_TMPL, libName))
-
-		if allow then
-			return constructSandboxMt(`@lune/{libName}`)(self, key)
-		end
-
-		error(string.format(DENIED_ERR_TMPL, "fs"))
-	end
-end
 
 local function discoverAndReadScript(filePath: string): string
 	local scriptContents: string
@@ -118,29 +101,28 @@ end
 
 local function sandboxPrint(...: any)
 	DEFAULT_PRINT(`---- Output from {SANDBOXED_ENV.debugName} ----`)
-	DEFAULT_PRINT(...)
+	DEFAULT_PRINT(tostring(...))
 	DEFAULT_PRINT(`---------------------------------------`)
 end
 
+local function constructProtectedMt<T>(library: T)
+	return {
+		__index = library,
+		__tostring = function()
+			return stdio.format(library)
+		end,
+	}
+end
+
 local SANDBOXED_LUNE_STD_LIB = {
-	["@lune/fs"] = setmetatable({}, {
-		__index = constructProtectedLibMt("fs"),
-	}),
-	["@lune/luau"] = setmetatable({}, {
-		__index = constructProtectedLibMt("luau")
-	}),
-	["@lune/process"] = setmetatable({}, {
-		__index = constructProtectedLibMt("process"),
-	}),
+	["@lune/fs"] = setmetatable({}, constructProtectedMt(fs)),
+	["@lune/luau"] = setmetatable({}, constructProtectedMt(luau)),
+	["@lune/process"] = setmetatable({}, constructProtectedMt(process)),
 	["@lune/stdio"] = setmetatable({
 		write = sandboxPrint,
 		ewrite = sandboxPrint,
-	}, {
-		__index = constructSandboxMt("@lune/stdio"),
-	}),
-	["@lune/net"] = setmetatable({}, {
-		__index = constructProtectedLibMt("net"),
-	}),
+	}, constructProtectedMt(stdio)),
+	["@lune/net"] = setmetatable({}, constructProtectedMt(net)),
 	["@lune/roblox"] = setmetatable({
 		getAuthCookie = function(...)
 			local allowAuthCookie: boolean = stdio.prompt(
@@ -149,7 +131,7 @@ local SANDBOXED_LUNE_STD_LIB = {
 			)
 
 			if allowAuthCookie then
-				local getAuthCookie = constructSandboxMt("@lune/roblox")({}, "getAuthCookie")
+				local getAuthCookie = require("@lune/roblox").getAuthCookie
 				return getAuthCookie(...)
 			end
 
@@ -157,9 +139,7 @@ local SANDBOXED_LUNE_STD_LIB = {
 				`{SANDBOXED_ENV.debugName} attempted to access .ROBLOSECURITY token even when denied`
 			)
 		end,
-	}, {
-		__index = constructSandboxMt("@lune/roblox"),
-	}),
+	}, constructProtectedMt(roblox)),
 	["@lune/serde"] = serde,
 	["@lune/task"] = task,
 	["@lune/regex"] = regex,
@@ -170,7 +150,13 @@ local function sandboxedRequire(path: string)
 	local module = SANDBOXED_LUNE_STD_LIB[path]
 
 	if module then
-		return module
+		local allowed: boolean = stdio.prompt("confirm", string.format(PROMPT_MSG_TMPL, path))
+
+		if allowed then
+			return module
+		end
+
+		error(string.format(DENIED_ERR_TMPL, path))
 	else
 		local contents = discoverAndReadScript(path)
 
