@@ -83,6 +83,7 @@ end
 local function constructProtectedMt<T>(library: T)
 	return {
 		__index = library,
+		__metatable = "Locked",
 		__tostring = function()
 			return stdio.format(library)
 		end,
