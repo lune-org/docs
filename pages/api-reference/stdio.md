@@ -16,6 +16,9 @@ stdio.write("Hello, ")
 stdio.write("World! ")
 stdio.write("All on the same line")
 stdio.ewrite("\nAnd some error text, too")
+
+-- Reading the entire input from stdin
+local input = stdio.readToEnd()
 ```
 
 ## Functions
@@ -122,5 +125,15 @@ Writes a string directly to stderr, without any newline.
 #### Parameters
 
 -   `s` The string to write to stderr
+
+---
+
+### readToEnd
+
+Reads the entire input from stdin.
+
+#### Returns
+
+-   The input from stdin
 
 ---
