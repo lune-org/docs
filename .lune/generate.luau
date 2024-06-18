@@ -10,16 +10,36 @@ local typedefsFile = fs.readFile("temp/moonwave.json")
 local items: { moonwave.Item } = serde.decode("json", typedefsFile)
 
 -- Generate markdown for all of the libraries
-local generatedFiles = {}
+local generatedFiles = {} :: { [number]: {
+	displayName: string,
+	name: string,
+	content: string,
+} }
 for _, item in items do
 	local file = item.source.path
 	local name = string.match(file, "(.+)%.luau")
 	assert(name ~= nil, "Failed to remove luau suffix from file name")
-	table.insert(generatedFiles, {
-		displayName = item.name,
-		name = string.lower(name),
-		content = writeMarkdown(item),
-	})
+
+	-- If we have an existing entry, such as when we have multiple
+	-- classes within the same library (Regex, RegexCaptures, ...)
+	-- we want to append to the existing entry instead of creating
+	local existing = nil
+	for _, info in generatedFiles do
+		if info.name == string.lower(name) then
+			existing = info
+			break
+		end
+	end
+
+	if existing then
+		existing.content ..= writeMarkdown(item)
+	else
+		table.insert(generatedFiles, {
+			displayName = item.name,
+			name = string.lower(name),
+			content = writeMarkdown(item),
+		})
+	end
 end
 
 -- Remove any old files, generate new ones

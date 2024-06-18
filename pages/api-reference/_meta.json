@@ -4,6 +4,7 @@
 	"luau": "Luau",
 	"net": "Net",
 	"process": "Process",
+	"regex": "Regex",
 	"roblox": "Roblox",
 	"serde": "Serde",
 	"stdio": "Stdio",
