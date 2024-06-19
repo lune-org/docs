@@ -15,15 +15,15 @@
 	},
 	"homepage": "https://github.com/lune-orc/docs#readme",
 	"dependencies": {
-		"next": "^13.4.12",
-		"nextra": "^2.10.0",
-		"nextra-theme-docs": "^2.10.0",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"next": "^13.5.6",
+		"nextra": "^2.13.4",
+		"nextra-theme-docs": "^2.13.4",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
 		"@types/node": "18.11.10",
-		"eslint": "^8.45.0",
+		"eslint": "^8.57.0",
 		"next": "^13.4.12",
 		"typescript": "4.9.5"
 	}
