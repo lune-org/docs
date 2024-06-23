@@ -107,7 +107,10 @@ The options passed while loading a luau chunk from an arbitrary string, or bytec
 This is a dictionary that may contain one or more of the following values:
 
 -   `debugName` - The debug name of the closure. Defaults to `luau.load(...)`.
--   `environment` - Environment values to set and/or override. Includes default globals unless
-    overwritten.
+-   `environment` - A custom environment to load the chunk in. Setting a custom environment will
+    deoptimize the chunk and forcefully disable codegen. Defaults to the global environment.
+-   `injectGlobals` - Whether or not to inject globals in the custom environment. Has no effect if
+    no custom environment is provided. Defaults to `true`.
+-   `codegenEnabled` - Whether or not to enable codegen. Defaults to `false`.
 
 ---
