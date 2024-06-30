@@ -97,31 +97,32 @@ yay -S [PACKAGE_NAME]
 macOS* and Linux users can use [Nix](https://nixos.org/) to install Lune.
 
 <Callout type="warning" emoji="⚠️">
-  macOS is currently broken. Help is wanted.
+  *the macOS build is currently broken. Help is wanted debugging [it](https://github.com/NixOS/nixpkgs/blob/36f9963ac7ea0a471c1d408e90edec093a819d83/pkgs/development/interpreters/lune/default.nix).
 </Callout>
 
-#### Imperatively
-
-##### On NixOS
+<details>
+<summary>Imperatively</summary>
+<br />
+**NixOS**
 
 ```sh copy filename="Bash"
 nix-env -iA nixos.lune
-``` 
+```
 
-##### On Non NixOS without flakes
+**Non NixOS**
 
 ```sh copy filename="Bash"
 nix-env  -iA nixpkgs.lune
-```
-
-##### On Non NixOS with flakes
-
-```sh copy filename="Bash"
+# If you are using flakes
 nix profile install nixpkgs#lune
 ```
-#### Declaratively
 
-##### With [home-manager](https://github.com/nix-community/home-manager)
+</details>
+
+<details>
+<summary>Declaratively</summary>
+<br />
+**With [home-manager](https://github.com/nix-community/home-manager)**
 
 ```nix copy filename="nix"
 home.packages = with pkgs; [
@@ -129,7 +130,7 @@ home.packages = with pkgs; [
 ];
 ```
 
-##### system-wide NixOS configuration
+**system-wide NixOS configuration**
 
 ```nix copy filename="nix"
 enviroment.systemPackages = with pkgs; [
@@ -137,11 +138,18 @@ enviroment.systemPackages = with pkgs; [
 ];
 ```
 
-##### Temporarily
+</details>
+
+<details>
+<summary>Temporarily</summary>
+<br />
+You can temporarily use Lune in your shell. You can use this to try out Lune before deciding to permanently install it.
 
 ```sh copy filename="Bash"
 nix-shell -p lune
 ```
+
+</details>
 
 </details>
 
