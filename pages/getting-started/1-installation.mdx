@@ -92,6 +92,65 @@ yay -S [PACKAGE_NAME]
   Only one of these AUR packages must be installed at a time in order to prevent conflicts.
 </Callout>
 
+### Nix
+
+macOS* and Linux users can use [Nix](https://nixos.org/) to install Lune.
+
+<Callout type="warning" emoji="⚠️">
+  *the macOS build is currently broken. Help is wanted debugging [it](https://github.com/NixOS/nixpkgs/blob/36f9963ac7ea0a471c1d408e90edec093a819d83/pkgs/development/interpreters/lune/default.nix).
+</Callout>
+
+<details>
+<summary>Imperatively</summary>
+<br />
+**NixOS**
+
+```sh copy filename="Bash"
+nix-env -iA nixos.lune
+```
+
+**Non NixOS**
+
+```sh copy filename="Bash"
+nix-env  -iA nixpkgs.lune
+# If you are using flakes
+nix profile install nixpkgs#lune
+```
+
+</details>
+
+<details>
+<summary>Declaratively</summary>
+<br />
+**With [home-manager](https://github.com/nix-community/home-manager)**
+
+```nix copy filename="nix"
+home.packages = with pkgs; [
+  lune
+];
+```
+
+**system-wide NixOS configuration**
+
+```nix copy filename="nix"
+enviroment.systemPackages = with pkgs; [
+  lune
+];
+```
+
+</details>
+
+<details>
+<summary>Temporarily</summary>
+<br />
+You can temporarily use Lune in your shell. You can use this to try out Lune before deciding to permanently install it.
+
+```sh copy filename="Bash"
+nix-shell -p lune
+```
+
+</details>
+
 </details>
 
 <details>
