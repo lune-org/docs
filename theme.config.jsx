@@ -34,4 +34,9 @@ export default {
 			/>
 		</>
 	),
+	head: (
+		<>
+			<link rel="icon" href="https://github.com/lune-org/lune/raw/main/assets/logo/tilt.png" type="image/png" />
+		</>
+	)
 }
