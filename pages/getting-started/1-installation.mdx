@@ -1,15 +1,39 @@
-import { Callout } from 'nextra/components'
+import { Callout, Steps } from 'nextra/components'
 
 # Installation
 
-The preferred way of installing Lune is using [Aftman](https://github.com/lpghatguy/aftman).
+The preferred way of installing Lune is using [Rokit](https://github.com/rojo-rbx/rojo),
+a toolchain manager for Roblox projects. Rokit can manage your installed version of Lune and
+other ecosystem tools, and allows you to easily upgrade to newer versions as they become available.
 
-Install Aftman, and run this command in your terminal to add `lune` to an `aftman.toml` file in the
-current directory, or create one if it does not exist:
+<Steps>
+
+### Installing Rokit
+
+Follow the installation instructions on the [Rokit](https://github.com/rojo-rbx/rojo) page.
+
+### Installing Lune
+
+Navigate to your project directory using your terminal, and run the following command:
 
 ```sh copy filename="Bash"
-aftman add lune-org/lune
+rokit add lune
 ```
+
+### Upgrading Lune
+
+When a new version of Lune becomes available, using Rokit will also allow you to easily upgrade to it.
+Navigate to your project directory using your terminal again, and run the following command:
+
+```sh copy filename="Bash"
+rokit update lune
+```
+
+</Steps>
+
+If you prefer to install Lune globally and having it be accessible on your entire system,
+instead of only in a specific project, you can do this with Rokit as well. Just add the
+`--global` option to the end of the commands above.
 
 ## Other Installation Options
 
@@ -19,7 +43,8 @@ aftman add lune-org/lune
 You can download pre-built binaries for most systems directly from the
 [GitHub Releases](https://github.com/lune-org/lune/releases) page. <br /> There are many tools
 that can install binaries directly from releases, and it is up to you to choose what tool to use
-when installing here.
+when installing here. Lune is compatible with both [Foreman](https://github.com/Roblox/foreman)
+and [Aftman](https://github.com/LPGhatguy/aftman).
 
 </details>
 
