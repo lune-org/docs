@@ -67,7 +67,7 @@ local function discoverAndReadScript(filePath: string): string
 		end
 
 		if fs.isFile(filePath .. "/init.lua") then
-			scriptContents = fs.readFile(filePath .. "init.lua")
+			scriptContents = fs.readFile(filePath .. "/init.lua")
 		end
 	end
 
