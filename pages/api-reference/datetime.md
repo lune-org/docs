@@ -324,6 +324,17 @@ The returned table contains the following values:
 
 ## Types
 
+### DateTime
+
+An individual DateTime object for a specific moment in time.
+
+Properties:
+
+- `unixTimestamp` - Number of seconds passed since the UNIX epoch.
+- `unixTimestampMillis` - Number of milliseconds passed since the UNIX epoch.
+
+---
+
 ### Locale
 
 Enum type representing supported DateTime locales.
