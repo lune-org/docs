@@ -112,7 +112,7 @@ Setting the exit code using this function will override any otherwise automatic 
 ### spawn
 
 Spawns a child process that will run the program `program`, and returns a dictionary that describes
-the final status and ouput of the child process.
+the final status and output of the child process.
 
 The second argument, `params`, can be passed as a list of string parameters to give to the program.
 
