@@ -34,7 +34,7 @@ elseif #process.args > 0 then
 	print(process.args)
 else
 	print("Got no arguments ☹️")
-	local prompted = stdio.prompt("Please enter some text:")
+	local prompted = stdio.prompt("text", "Please enter some text:")
 	print("Got prompted text:", prompted)
 end
 ```
