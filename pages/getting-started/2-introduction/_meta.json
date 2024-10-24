@@ -8,5 +8,6 @@
 	"7-environment-variables": "7 • Environment Variables",
 	"8-modules": "8 • Modules",
 	"9-task-scheduler": "9 • Task Scheduler",
-	"10-spawning-processes": "10 • Spawning Processes"
+	"10-spawning-processes": "10 • Spawning Processes",
+	"11-ffi": "11 • Foreign Function Interface"
 }

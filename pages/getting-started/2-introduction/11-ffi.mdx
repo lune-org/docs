@@ -1,0 +1,115 @@
+import { FileTree, Tabs, Tab, Callout } from 'nextra/components'
+
+# FFI
+
+Luna has built-in library for handling foreign function, [`ffi`](../../api-reference/ffi.md).
+This library will let you call external function, allocate memories with specific size and value, create closures, and more.
+
+## Example File Tree
+
+Let's use this directly & file tree sturcture for our examples:
+
+<FileTree>
+	<FileTree.Folder name="-" defaultOpen>
+		<FileTree.File name="call.luau" />
+		<FileTree.File name="closure.luau" />
+		<FileTree.Folder name="external" defaultOpen>
+			<FileTree.File name="lib.c" />
+			<FileTree.File name="lib.so" />
+		</FileTree.Folder>
+	</FileTree.Folder>
+</FileTree>
+
+<details>
+<summary>Show file contents</summary>
+
+	```c copy filename="external/lib.c"
+	int addNumber(int a, int *b) {
+		return a + *b;
+	}
+
+	typedef int(*closure_t)(int, int*);
+	int callClosure(closure_t closure) {
+		int b = 200;
+		return closure(100, &b) * 2;
+	}
+	```
+
+</details>
+
+<Callout type="info" emoji="❔">
+	To create the `external/lib.so` file, you will need a C compiler like `gcc`. Run c compiler with the following command: `gcc -shared -o external/lib.so -fPIC external/lib.c`.
+</Callout>
+
+## Call external function
+
+```lua copy filename="call.luau"
+local ffi = require("@lune/ffi")
+local c = ffi.c
+
+--> Open dynamic library
+local lib = ffi.open("./external/lib.so")
+
+--> Create function signature
+local addNumberInfo = c.fn({ c.int, c.int:ptr() }, c.int)
+
+--> Get symbol from library and create callable
+local addNumber = addNumberInfo:callable(lib:find("addNumber"))
+
+--> Create memory for result
+local resultBox = ffi.box(c.int.size)
+
+--> Create arguments
+local aBox = c.int:box(100)
+local bBox = c.int:box(200)
+
+--> Call external function. all arguments should be references.
+--> If you want to pass a pointer as argument, call `:ref()` again.
+addNumber(resultBox, aBox:ref(), bBox:ref():ref())
+
+--> Read number from resultBox
+local result = c.int:readData(resultBox)
+print(result) -- 300
+```
+
+Note that All data is automatically freed by the garbage collector. If external function stores pointer in somewhere or frees pointer, you should call `:leak()` to leak it.
+
+## Create closure from lua function
+
+```lua copy filename="closure.luau"
+local ffi = require("@lune/ffi")
+local c = ffi.c
+
+--> Open dynamic library
+local lib = ffi.open("./external/lib.so")
+
+--> Create closure function signature
+local closureInfo = c.fn({ c.int, c.int:ptr() }, c.int)
+
+--> Create closure with lua function
+local closure = closureInfo:closure(function(resultRef, aRef, bRefRef)
+	--> Convert arguments to lua number
+	local a = c.int:readData(aRef)
+	local b = c.int:readData(bRefRef:deref())
+
+	--> Write a+b into result reference
+	c.int:writeData(resultRef, a + b)
+	print("Closure returned: " .. (a + b))
+end)
+
+--> Create callClosure function signature
+local callClosureInfo = c.fn({ closureInfo }, c.int)
+
+--> Get symbol from library and create callable
+local callClosure = callClosureInfo:callable(lib:find("callClosure"))
+
+--> Create memory for result
+local resultBox = ffi.box(c.int.size)
+
+--> Call external function.
+callClosure(resultBox, closure:ref())
+
+--> Read number from resultBox
+local result = c.int:readData(resultBox)
+print(result) -- 600
+```
