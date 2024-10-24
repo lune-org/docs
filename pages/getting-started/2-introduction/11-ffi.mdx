@@ -23,17 +23,17 @@ Let's use this directly & file tree sturcture for our examples:
 <details>
 <summary>Show file contents</summary>
 
-```c copy filename="external/lib.c"
+	```c copy filename="external/lib.c"
 	int addNumber(int a, int *b) {
-		return a + b;
+		return a + *b;
 	}
 
-	typedef int(*closure_t)(int, int);
+	typedef int(*closure_t)(int, int*);
 	int callClosure(closure_t closure) {
 		int b = 200;
 		return closure(100, &b) * 2;
 	}
-```
+	```
 
 </details>
 
@@ -48,7 +48,7 @@ local ffi = require("@lune/ffi")
 local c = ffi.c
 
 --> Open dynamic library
-local lib = ffi.open("./external/lib.c")
+local lib = ffi.open("./external/lib.so")
 
 --> Create function signature
 local addNumberInfo = c.fn({ c.int, c.int:ptr() }, c.int)
@@ -76,12 +76,12 @@ Note that All data is automatically freed by the garbage collector. If external 
 
 ## Create closure from lua function
 
-```lua copy filename="call.luau"
+```lua copy filename="closure.luau"
 local ffi = require("@lune/ffi")
 local c = ffi.c
 
 --> Open dynamic library
-local lib = ffi.open("./external/lib.c")
+local lib = ffi.open("./external/lib.so")
 
 --> Create closure function signature
 local closureInfo = c.fn({ c.int, c.int:ptr() }, c.int)
@@ -111,5 +111,5 @@ callClosure(resultBox, closure:ref())
 
 --> Read number from resultBox
 local result = c.int:readData(resultBox)
-print(result) -- 300
+print(result) -- 600
 ```
