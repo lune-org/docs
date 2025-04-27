@@ -23,7 +23,7 @@ end
 print("Running " .. process.os .. " on " .. process.arch .. "!")
 
 -- Spawning a child process
-local result = process.spawn("program", {
+local result = process.exec("program", {
 	"cli argument",
 	"other cli argument"
 })
@@ -137,7 +137,7 @@ process. Refer to the documentation for `SpawnOptions` for specific option keys 
 
 ### SpawnOptions
 
-A dictionary of options for `process.spawn`, with the following available values:
+A dictionary of options for `process.exec`, with the following available values:
 
 -   `cwd` - The current working directory for the process
 -   `env` - Extra environment variables to give to the process
@@ -151,7 +151,7 @@ A dictionary of options for `process.spawn`, with the following available values
 
 ### SpawnResult
 
-Result type for child processes in `process.spawn`.
+Result type for child processes in `process.exec`.
 
 This is a dictionary containing the following values:
 
