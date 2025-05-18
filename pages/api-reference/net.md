@@ -14,15 +14,18 @@ print(response.statusCode, response.statusMessage)
 print(response.headers)
 
 -- Using a JSON web API
+
+local serde = require('@lune/serde')
+
 local response = net.request({
 	url = "https://dummyjson.com/products/add",
 	method = "POST",
 	headers = { ["Content-Type"] = "application/json" },
-	body = net.jsonEncode({
+	body = serde.encode('json', {
 		title = "Cool Pencil",
 	})
 })
-local product = net.jsonDecode(response.body)
+local product = serde.decode("json", response.body)
 print(product.id, "-", product.title)
 
 -- Starting up a webserver
