@@ -2,12 +2,12 @@
 /node_modules
 /temp
 /out
-/.next
+/.astro
 /.env
 
 /**/.DS_Store
 /**/node_modules
 /**/temp
 /**/out
-/**/.next
+/**/.astro
 /**/.env
