@@ -2,96 +2,99 @@
 title: Input & Output
 ---
 
-One of Lune's most useful libraries for writing scripts is the standard I/O library, also known as
-`stdio`, which will be the first one we introduce here. The pages following this one will introduce
-several others.
+Let's start exploring Lune's capabilities with the `stdio` library, which handles standard input and output. This is one of the most useful libraries for creating interactive scripts.
 
-## Prompting for User Input
+## Getting User Input
 
-The easiest way to get started and being productive using Lune is to prompt the person running your
-script for some text input, which you can do using the [`stdio`](../../api-reference/stdio.md)
-library. Let's make a script called `hello.luau`:
+The `stdio` library makes it easy to interact with users. Let's create our first interactive script called `hello.luau`:
 
 ```luau
 // hello.luau
 local stdio = require("@lune/stdio")
 
-local name = stdio.prompt("text", "Hello there! What's your name?")
+local name = stdio.prompt("text", "What's your name?")
 
-print("Hello, " .. name .. "!")
+print(`Hello, {name}!`)
 ```
 
-Now you can place this script in your current directory, and run it using Lune:
+Save this file in your current directory, then run it using the Lune CLI:
 
 ```bash title="Terminal"
 lune run hello
 ```
 
-You can also prompt for more than just text. Let's extend the above script and ask the person
-running the script if that was really their name:
+When you run this script, it will wait for you to type your name and press Enter, then greet you!
+
+## Different Types of Prompts
+
+The `stdio` library can prompt for more than just text. Let's expand our script to ask a yes/no question:
 
 ```luau
 // hello.luau
+local stdio = require("@lune/stdio")
+
+local name = stdio.prompt("text", "What's your name?")
+print(`Hello, {name}!`)
+
 local confirmed = stdio.prompt("confirm", "Is that really your name?")
 if confirmed then
-	print("Nice to meet you, " .. name .. "!")
+	print(`Nice to meet you, {name}!`)
 	print("Have a great day!")
 else
-	print("You lied to me! Goodbye 😡")
+	print("Hmm, well whoever you are, welcome!")
 end
 ```
 
-There are more options for prompting for user input than what we covered in this example, but these
-two basic prompting methods should cover most of your use cases and get you started with making
-interactive scripts.
+The `confirm` prompt type shows a yes/no question and returns `true` or `false` based on the user's choice.
 
-Next, head on over to the following section on [Script Arguments](./4-script-arguments.md) or check
-out the bonus game below!
+These two prompt types - `text` and `confirm` - will cover most of your interactive script needs. There are more advanced options available in the [stdio API reference](../../api-reference/stdio) when you need them.
 
 <details>
-<summary>Bonus</summary>
+<summary>Extra: Number Guessing Game</summary>
 
-## Guessing Game
+## Building a Simple Game
 
-Here's a tiny game you can play versus the computer, using nothing but Lune's
-[`stdio`](../../api-reference/stdio.md) library and Luau's `math` library. This is a bit longer of a
-script, but don't worry, it is still only using the same functions as the script above, albeit this
-time together with a `while ... do` loop and a couple `if ... then` statements:
+Here's a fun example that combines what we've learned with some basic Luau programming. Don't worry if you don't understand every line yet - focus on how `stdio.prompt` is used to create an interactive experience:
 
 ```luau
 // guessing-game.luau
 local stdio = require("@lune/stdio")
 
-print("")
-print("Let's play a game! Whoever guesses the correct number between 1 and 10 first will win.")
-print("")
+print("Welcome to the number guessing game!")
+print("I'm thinking of a number between 1 and 10.")
+print()
 
 local answer = tostring(math.random(1, 10))
+local attempts = 0
 
-local guess = stdio.prompt("text", "Input a number between 1 and 10")
+local guess = stdio.prompt("text", "What's your guess?")
+attempts += 1
+
 while guess ~= answer do
-	print("Incorrect! Computer's turn...")
-
-	local computer = tostring(math.random(1, 10))
-	print("The computer guessed", computer)
-
-	if computer == answer then
-		break
+	if tonumber(guess) and tonumber(guess) < tonumber(answer) then
+		print("Too low! Try again.")
+	elseif tonumber(guess) and tonumber(guess) > tonumber(answer) then
+		print("Too high! Try again.")
+	else
+		print("That's not a valid number.")
 	end
 
-	print("Incorrect! Your turn...")
-	guess = stdio.prompt("text", "Input a number between 1 and 10")
+	guess = stdio.prompt("text", "What's your guess?")
+	attempts += 1
 end
 
-print("")
-print(if guess == answer then "You won the game! 🎉" else "The computer won the game! 😭")
-print("")
+print()
+print(`Correct! You got it in {attempts} attempts!`)
 ```
 
-Just like before, you can place this script in your current directory, and run it using Lune:
+Try running this game and see if you can guess the number! This example shows how `stdio.prompt` can be used in a loop to create ongoing interaction.
 
-```sh title="Terminal"
+```bash title="Terminal"
 lune run guessing-game
 ```
 
 </details>
+
+## What's Next?
+
+Now that you know how to get input from users, let's learn about handling input that comes from the command line when someone runs your script. This is covered in the next chapter on [Arguments](./4-arguments).

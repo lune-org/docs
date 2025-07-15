@@ -1,129 +1,242 @@
 ---
-title: Network Requests
+title: Networking
 ---
 
-One of Lune's most useful libraries is the networking library, also known as `net`. This library
-lets you access the internet and make HTTP requests to different websites, servers, and external
-APIs.
+Now we're getting to the really fun stuff! The `net` library lets your scripts talk to the internet - whether that's fetching data from websites, calling APIs, or even creating your own web servers.
 
-## Sending HTTP Requests
+## Making Web Requests
 
-Sending HTTP requests is the most basic function of the [`net`](../../api-reference/net.md) library.
-Let's make a script called `googler.luau`:
+Let's start with something simple - fetching a web page:
 
-```luau copy filename="googler.luau"
+```luau
+// simple-request.luau
 local net = require("@lune/net")
 
-local response = net.request("https://google.com")
+local response = net.request("https://www.example.com")
 
 if response.ok then
-	print(
-		"Google responded with status code",
-		response.statusCode,
-		"and response message",
-		response.statusMessage,
-		"!"
-	)
+	print(`Success! Got {#response.body} bytes`)
+	print(`Status: {response.statusCode} {response.statusMessage}`)
 else
-	print("Google is down!! What?!?")
+	print(`Request failed: {response.statusCode}`)
 end
 ```
 
-Now you can place this script in your current directory, and run it using Lune:
+When you make a request, you get back a response object with everything you need - the status code, headers, body content, and an `ok` field that tells you if things went well.
 
-```sh copy filename="Bash"
-lune run googler
-```
+## Working with APIs
 
-## Sending JSON Requests
+Most modern web services use APIs that speak JSON.
+Here's how you can work with them:
 
-[JSON](https://www.json.org/json-en.html), or JavaScript Object Notation, is the most common format
-for sending data over the network. Lune includes APIs for serializing & deserializing JSON, also
-known as stringifying & parsing, in the `net` library. Let's use the free testing web API at
-[`https://jsonplaceholder.typicode.com/`](https://jsonplaceholder.typicode.com/) and send + receive
-some JSON data:
+```luau
+// github-api.luau
+local net = require("@lune/net")
+local serde = require("@lune/serde")
 
-```luau copy filename="json-api.luau"
-print("Sending PATCH request to web API")
-
-local apiResponse = net.request({
-	url = "https://jsonplaceholder.typicode.com/posts/1",
-	method = "PATCH",
-	headers = {
-		["Content-Type"] = "application/json",
-	},
-	body = serde.encode("json", {
-		title = "foo",
-		body = "bar",
-	}),
+-- Let's search GitHub for popular Luau projects
+local response = net.request({
+	url = "https://api.github.com/search/repositories",
+	query = {
+		q = "language:luau",
+		sort = "stars",
+		per_page = "3"
+	}
 })
 
-if not apiResponse.ok then
-	error(
-		string.format(
-			"%s\n%d (%s)\n%s",
-			"Failed to send network request!",
-			apiResponse.statusCode,
-			apiResponse.statusMessage,
-			apiResponse.body
-		)
-	)
+if response.ok then
+	local results = serde.decode("json", response.body)
+	print(`Found {results.total_count} Luau repositories!\n`)
+
+	for _, repo in results.items do
+		print(`⭐ {repo.stargazers_count} - {repo.full_name}`)
+		print(`   {repo.description}\n`)
+	end
 end
-
-type ResponseType = {
-	id: number,
-	title: string,
-	body: string,
-	userId: number,
-}
-
-local responseTable: ResponseType = serde.decode("json", apiResponse.body)
-assert(responseTable.title == "foo", "Invalid json response")
-assert(responseTable.body == "bar", "Invalid json response")
-
-print("Got valid JSON response with post title set to 'foo' and post body set to 'bar'")
-print("Full response:", responseTable)
 ```
 
-Running the above script Lune should now send a request to the placeholder API, verify that the
-response was correct, and print it out:
+When you need to send data to an API, you'll typically use methods other than GET, such as POST or PATCH:
 
-```sh copy filename="Bash"
-lune run json-api
+```luau
+// posting-stuff.luau
+local response = net.request({
+	url = "https://api.example.com/data",
+	method = "POST",
+	headers = { ["Content-Type"] = "application/json" },
+	body = serde.encode("json", {
+		name = "My Lune Script",
+		version = "1.0.0"
+	})
+})
 ```
 
----
+The `serde` library handles all the JSON encoding and decoding for you, so you can work with regular Lua tables and other datatypes.
 
-<details>
-<summary>Bonus</summary>
+## Running a Web Server
 
-## Network Server
+Sometimes you don't want to make requests - you want to receive them. Creating a web server with Lune is surprisingly easy:
 
-Lune can not only perform network requests, it can also open a server on a given port and serve
-requests on it. Here's a small example:
-
-```luau copy filename="network-server.luau"
+```luau
+// my-server.luau
 local net = require("@lune/net")
 
-local counter = 0
-net.serve(8080, function()
-	counter += 1
-	return {
-		status = 200,
-		body = "Hello! This is response #" .. tostring(counter),
-	}
+local visitCount = 0
+
+net.serve(8080, function(request)
+	visitCount += 1
+
+	print(`[{request.method}] {request.path} - Visit #{visitCount}`)
+
+	if request.path == "/" then
+		return {
+			status = 200,
+			headers = { ["Content-Type"] = "text/html" },
+			body = `<h1>Hello, visitor #{visitCount}!</h1>
+			       <p>Try visiting <a href="/api">/api</a></p>`
+		}
+	elseif request.path == "/api" then
+		return {
+			status = 200,
+			headers = { ["Content-Type"] = "text/plain" },
+			body = `You are visitor number {visitCount}`
+		}
+	else
+		return { status = 404, body = "Page not found" }
+	end
 end)
 
-print("Listening on port 8080 🚀")
+print("Server running at http://localhost:8080")
+print("Press Ctrl+C to stop")
 ```
 
-Just like before, you can place this script in your current directory, and run it using Lune:
+Your server can handle different routes, check request methods and headers, parse request bodies - everything you need for building real web applications.
 
-```sh copy filename="Bash"
-lune run network-server
+## Beyond HTTP
+
+The `net` library has even more tricks up its sleeve. It can handle WebSockets for real-time communication, raw TCP connections for custom protocols, and more.
+
+### WebSockets
+
+WebSockets are perfect when you need real-time, two-way communication.
+Lune makes these very easy to use as well:
+
+```luau
+// websocket-client.luau
+local net = require("@lune/net")
+
+-- Connect to a WebSocket echo server
+local socket = net.socket("wss://echo.websocket.org")
+
+socket:send("Hello from Lune!")
+
+-- Wait for the echo
+local reply = socket:next()
+print(`Server echoed: {reply}`)
+
+socket:close()
 ```
 
-Now, when you visit [`http://localhost:8080/`](http://localhost:8080/) you should see the response
-text above and the counter increasing each time you visit the page.
+<details>
+<summary>Extra: WebSocket Echo Server</summary>
+
+Here's a fun example that combines HTTP and WebSocket handling to create an interactive echo server:
+
+```luau
+// echo-server.luau
+local net = require("@lune/net")
+
+net.serve(8080, {
+	handleRequest = function(request)
+		return {
+			status = 200,
+			headers = { ["Content-Type"] = "text/html" },
+			body = [[
+				<h1>WebSocket Echo Test</h1>
+				<input id="message" placeholder="Type a message">
+				<button onclick="send()">Send</button>
+				<div id="log"></div>
+				<script>
+					const ws = new WebSocket('ws://localhost:8080');
+					const log = document.getElementById('log');
+
+					ws.onmessage = (e) => {
+						log.innerHTML += `<p>Echo: ${e.data}</p>`;
+					};
+
+					function send() {
+						const input = document.getElementById('message');
+						ws.send(input.value);
+						input.value = '';
+					}
+				</script>
+			]]
+		}
+	end,
+	handleWebSocket = function(socket)
+		print("WebSocket connected!")
+
+		for message in socket do
+			print(`Received: {message}`)
+			socket:send(`Echo: {message}`)
+		end
+
+		print("WebSocket disconnected")
+	end
+})
+
+print("Echo server running at http://localhost:8080")
+```
+
+Try running this and opening http://localhost:8080 in your browser. You'll have a working chat interface!
 
 </details>
+
+<details>
+<summary>Advanced: TCP Connections</summary>
+
+For those times when you need to speak a protocol that isn't HTTP, you can use raw TCP connections, optionally backed by TLS:
+
+```luau
+// raw-tcp.luau
+local net = require("@lune/net")
+
+-- Connect to example.com on port 80 (HTTP)
+local conn = net.tcp.connect("example.com", 80)
+
+-- Send a raw HTTP request
+conn:write("GET / HTTP/1.1\r\n")
+conn:write("Host: example.com\r\n")
+conn:write("Connection: close\r\n")
+conn:write("\r\n")
+
+-- Read the response
+local response = conn:read()
+print("Response received:")
+print(response)
+
+-- Keep reading until the server closes the connection
+while true do
+	local chunk = conn:read()
+	if chunk == nil or #chunk == 0 then
+		break
+	end
+	print(chunk)
+end
+
+conn:close()
+```
+
+Here's how you can use TLS for secure connections - add a simple flag argument for enabling it:
+
+```luau
+-- Connect with TLS enabled
+local secure = net.tcp.connect("example.com", 443, true)
+```
+
+This gives you the power to implement any TCP-based protocol - SMTP, FTP, custom game protocols, you name it. Lune does not currently provide built-in support for databases, but with TCP connections you can use existing clients built for other runtimes without much extra effort.
+
+</details>
+
+## What's Next?
+
+With all this network power at your fingertips, you'll probably want to save some of that data you're fetching. Let's explore how to work with files and directories in [Working with Files](./6-working-with-files).

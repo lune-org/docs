@@ -1,16 +1,20 @@
 ---
-title: Script Arguments
+title: Arguments
 ---
 
-Arguments can be passed to Lune scripts directly from the command line when running them:
+When you run a Lune script, you can pass information to it directly from the command line. These are called arguments, and they're incredibly useful for making your scripts flexible and reusable.
+
+## Passing Arguments
+
+Passing arguments when running a script is dead simple. Here's how:
 
 ```bash title="Terminal"
 lune run script-name arg1 arg2 "argument three"
 ```
 
-These arguments will then be available in your script using the
-[process](../../api-reference/process.md) built-in library, more specifically in
-[`process.args`](../../api-reference/process.md#args):
+## Using Arguments
+
+Your script can then access these arguments through the `process` standard library:
 
 ```luau
 local process = require("@lune/process")
@@ -19,24 +23,56 @@ print(process.args)
 --> { "arg1", "arg2", "argument three" }
 ```
 
----
+The arguments will always be an array (table) of strings, in the same order you provided them.
 
-Arguments in [`process.args`](../../api-reference/process.md#args) will always be a table that is a
-contiguous array, and are guaranteed to not change during runtime. A useful pattern here could be to
-check for arguments given, and if there are none, prompt the user for input:
+## A Practical Example
+
+Let's create a script that greets someone by name:
 
 ```luau
+// greet.luau
+local process = require("@lune/process")
+
+if #process.args == 0 then
+  print("Usage: lune run greet <name>")
+  print("Example: lune run greet Alice")
+else
+	local name = process.args[1]
+	print(`Hello, {name}! Welcome to Lune.`)
+end
+```
+
+Now you can run it with different names:
+
+```bash title="Terminal"
+lune run greet Alice
+--> Hello, Alice! Welcome to Lune.
+
+lune run greet "John Doe"
+--> Hello, John Doe! Welcome to Lune.
+```
+
+## Combining Arguments with User Input
+
+Here's a clever pattern - use arguments when provided, but fall back to prompting the user if they're missing:
+
+```luau
+// smart-greet.luau
 local process = require("@lune/process")
 local stdio = require("@lune/stdio")
 
-if #process.args > 3 then
-	error("Too many arguments!")
-elseif #process.args > 0 then
-	print("Got arguments:")
-	print(process.args)
+local name
+if #process.args > 0 then
+	name = process.args[1]
 else
-	print("Got no arguments ☹️")
-	local prompted = stdio.prompt("Please enter some text:")
-	print("Got prompted text:", prompted)
+	name = stdio.prompt("text", "What's your name?")
 end
+
+print(`Hello, {name}!`)
 ```
+
+This script works both ways - with arguments or interactively!
+
+## What's Next?
+
+Now that you can handle user input and arguments, let's explore one of Lune's most powerful features - the standard library for networking. Head over to [Networking](./5-networking) to learn more.

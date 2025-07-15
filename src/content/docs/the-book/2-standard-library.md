@@ -2,27 +2,26 @@
 title: The Standard Library
 ---
 
-Lune contains a comprehensive standard library. It includes, but
-is not limited to, these libraries and their common use cases:
+Lune has a comprehensive standard library that gives your scripts powerful capabilities. These libraries let you do everything from reading files, to making web requests, to running other programs.
 
-- The [`fs`](../../api-reference/fs.md) library for manipulating files
-- The [`net`](../../api-reference/net.md) library for making HTTP requests
-- The [`process`](../../api-reference/process.md) library for executing external programs and processes
+Here are some of the most commonly used libraries:
 
-This is just a small subset of what is available in Lune, but for now, what is important is that
-these libraries must be imported using a special kind of `require` statement:
+- [`fs`](../../api-reference/fs) - Work with files and directories
+- [`net`](../../api-reference/net) - Make HTTP requests and create servers
+- [`process`](../../api-reference/process) - Run external programs and access system information
+- [`stdio`](../../api-reference/stdio) - Get input from users and display output
+- [`task`](../../api-reference/task) - Schedule and manage concurrent tasks
 
-```luau copy
+## Importing Libraries
+
+Unlike Luau's built-in globals like [`math`](https://luau-lang.org/library#math-library) or [`table`](https://luau-lang.org/library#table-library), Lune's libraries need to be imported before you can use them. You do this with a special `require` statement:
+
+```luau
 local fs = require("@lune/fs")
 local net = require("@lune/net")
 local process = require("@lune/process")
 ```
 
-As you can see above, unlike Luau's standard libraries such as
-[`math`](https://luau-lang.org/library#math-library),
-[`table`](https://luau-lang.org/library#table-library),
-[`string`](https://luau-lang.org/library#string-library), and others, Lune's built-in libraries
-are not available as global variables, and importing them before using them is, _required_.
+The `@lune/` prefix tells Lune that you want to use one of its built-in libraries rather than looking for a file in your project.
 
-The next few sections will contain examples of how to run scripts, more specific usage of Lune's
-built-in libraries, and what they are most commonly used for.
+Throughout the rest of this book, we'll explore these libraries in detail and see how they work together to make Lune scripts powerful and flexible.
