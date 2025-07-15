@@ -152,10 +152,6 @@ Replaces all matches in the given text with the given replacer string.
 
 ---
 
-# RegexCaptures
-
-Captures from a regular expression.
-
 # RegexMatch
 
 A match from a regular expression.
@@ -166,3 +162,7 @@ Contains the following values:
 - `finish` -- The end index of the match in the original string.
 - `text` -- The text that was matched.
 - `len` -- The length of the text that was matched.
+
+# RegexCaptures
+
+Captures from a regular expression.

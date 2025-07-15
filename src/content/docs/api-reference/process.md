@@ -1,64 +1,6 @@
 ---
-title: ChildProcessReader
+title: Process
 ---
-
-A reader class to read data from a child process' streams in realtime.
-
-## Functions
-
-### read
-
-Reads a chunk of data up to the specified length, or a default of 1KB at a time.
-
-Returns nil if there is no more data to read.
-
-This function may yield until there is new data to read from reader, if all data
-till present has already been read, and the process has not exited.
-
-#### Parameters
-
-- `chunkSize` number?
-
-#### Returns
-
-- The string containing the data read from the reader
-
----
-
-### readToEnd
-
-Reads all the data currently present in the reader as a string.
-This function will yield until the process exits.
-
-#### Returns
-
-- The string containing the data read from the reader
-
----
-
-# ChildProcessWriter
-
-A writer class to write data to a child process' streams in realtime.
-
-## Functions
-
-### write
-
-Writes a buffer or string of data to the writer.
-
-#### Parameters
-
-- `data` The data to write to the writer
-
----
-
-### close
-
-Closes the underlying I/O stream for the writer.
-
----
-
-# Process
 
 Built-in functions for the current process & child processes
 
@@ -317,5 +259,63 @@ This is a dictionary containing the following values:
 - `code` - The exit code set by the child process, or 0 if one was not set
 - `stdout` - The full contents written to stdout by the child process, or an empty string if nothing was written
 - `stderr` - The full contents written to stderr by the child process, or an empty string if nothing was written
+
+---
+
+# ChildProcessReader
+
+A reader class to read data from a child process' streams in realtime.
+
+## Functions
+
+### read
+
+Reads a chunk of data up to the specified length, or a default of 1KB at a time.
+
+Returns nil if there is no more data to read.
+
+This function may yield until there is new data to read from reader, if all data
+till present has already been read, and the process has not exited.
+
+#### Parameters
+
+- `chunkSize` number?
+
+#### Returns
+
+- The string containing the data read from the reader
+
+---
+
+### readToEnd
+
+Reads all the data currently present in the reader as a string.
+This function will yield until the process exits.
+
+#### Returns
+
+- The string containing the data read from the reader
+
+---
+
+# ChildProcessWriter
+
+A writer class to write data to a child process' streams in realtime.
+
+## Functions
+
+### write
+
+Writes a buffer or string of data to the writer.
+
+#### Parameters
+
+- `data` The data to write to the writer
+
+---
+
+### close
+
+Closes the underlying I/O stream for the writer.
 
 ---

@@ -9,36 +9,62 @@ local writeMarkdown = require("./writer")
 local typedefsFile = fs.readFile("temp/moonwave.json")
 local items: { moonwave.Item } = serde.decode("json", typedefsFile)
 
--- Generate markdown for all of the libraries
+-- Sort all of the extracted files & items, making sure that
+-- the item that matches the library name always comes first,
+-- which will prevent for example ChildProcessWriter from
+-- becoming the title for the Process standard library
+local parsedFiles = {} :: { [number]: {
+	path: string,
+	name: string,
+	item: moonwave.Item,
+} }
+for _, item in items do
+	local rawPath = item.source.path
+
+	local path = string.match(rawPath, "lune%-std%-(.+)/types%.d%.luau")
+	assert(path ~= nil, "Failed to match standard library path")
+
+	table.insert(parsedFiles, {
+		path = string.lower(path),
+		name = item.name,
+		item = item,
+	})
+end
+table.sort(parsedFiles, function(a, b)
+	local aIsExact = a.path == string.lower(a.name)
+	local bIsExact = b.path == string.lower(b.name)
+	if aIsExact ~= bIsExact then
+		return aIsExact
+	end
+	return a.path < b.path
+end)
+
+-- Generate all of the markdown
 local generatedFiles = {} :: { [number]: {
-	displayName: string,
+	path: string,
 	name: string,
 	content: string,
 } }
-for _, item in items do
-	local file = item.source.path
-	local name = string.match(file, "lune%-std%-(.+)/types%.d%.luau")
-	assert(name ~= nil, "Failed to remove luau suffix from file name")
-
+for _, parsed in parsedFiles do
 	-- If we have an existing entry, such as when we have multiple
 	-- classes within the same library (Regex, RegexCaptures, ...)
 	-- we want to append to the existing entry instead of creating
 	local existing = nil
 	for _, info in generatedFiles do
-		if info.name == string.lower(name) then
+		if info.path == string.lower(parsed.path) then
 			existing = info
 			break
 		end
 	end
 
 	if existing then
-		existing.content ..= writeMarkdown(item, false)
+		existing.content ..= writeMarkdown(parsed.item, false)
 	else
-		local content = `---\ntitle: {item.name}\n---\n\n`
-		content ..= writeMarkdown(item, true)
+		local content = `---\ntitle: {parsed.item.name}\n---\n\n`
+		content ..= writeMarkdown(parsed.item, true)
 		table.insert(generatedFiles, {
-			displayName = item.name,
-			name = string.lower(name),
+			path = string.lower(parsed.path),
+			name = parsed.name,
 			content = content,
 		})
 	end
@@ -50,8 +76,7 @@ if fs.isDir("src/content/docs/api-reference") then
 end
 fs.writeDir("src/content/docs/api-reference")
 for _, file in generatedFiles do
-	print(file)
-	fs.writeFile(`src/content/docs/api-reference/{file.name}.md`, file.content)
+	fs.writeFile(`src/content/docs/api-reference/{file.path}.md`, file.content)
 end
 
 -- Finally, call out to prettier to ensure that our
