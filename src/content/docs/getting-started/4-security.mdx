@@ -4,36 +4,32 @@ title: Security
 
 import { Steps } from "@astrojs/starlight/components";
 
-When running Lune scripts, it is important to note that any scripts you execute have
-full access to your device - this means access to your files, programs, and more.
-It is important to stay cautious when executing a script from a source you don't trust.
+When running Lune scripts, it's important to know that any scripts you execute have full access to your device - this means access to your files, programs, and more. It is generally good to be cautious when running scripts from sources you don't trust.
 
-Some alternatives to solving this problem are:
+Here are some ways to run untrusted scripts more safely:
 
-1. Running Lune scripts in a custom sandboxed environment.
-2. Using a containerized environment such as Docker.
-3. Using a virtual machine.
+1. Running Lune scripts in a custom sandboxed environment
+2. Using a containerized environment such as Docker
+3. Using a virtual machine
 
 ## Sandboxing
 
-Lune provides a rudimentary, albeit working sandboxing example. We provide steps to use it here,
-but for proper security & deployments, using a container or a virtual machine is highly recommended.
+Lune provides a basic but functional sandboxing example. We'll show you how to use it here, but for production use and proper security, using a container or virtual machine is highly recommended.
 
 <Steps>
 
-1. Copy the [sandbox module](https://github.com/lune-org/docs/blob/main/modules/sandbox.luau) and place it in a file named `sandbox.luau`.
+1. Copy the [sandbox module](https://github.com/lune-org/docs/blob/main/modules/sandbox.luau) and save it as `sandbox.luau`.
 
-2. Now, place the untrusted script you want to run safely next to the `sandbox.luau` script.
+2. Place the untrusted script you want to run next to the `sandbox.luau` file.
 
    ```bash title="Terminal"
    lune run sandbox.luau script.luau -- [ARGUMENTS_HERE]
    ```
 
-   Replace `script.luau` and `[ARGUMENTS_HERE]` with the path to the script and the arguments to run it with.
+   Replace `script.luau` and `[ARGUMENTS_HERE]` with the path to your script and any arguments you want to pass to it.
 
-3. As the script runs, any requires to potentially dangerous modules will require your approval
-   before continuing and any invocations to methods within approved modules will be logged.
+3. As the script runs, any attempts to access potentially dangerous modules will require your approval before continuing. Any method calls within approved modules will be logged.
 
-   Additionally, the output of the sandbox script and the script being run will be separated.
+   The output from the sandbox script and the script being run will be clearly separated, so you can see what's happening.
 
 </Steps>
