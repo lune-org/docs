@@ -1,0 +1,124 @@
+---
+title: "Migrating from Remodel"
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+If you have used [Remodel](https://github.com/rojo-rbx/remodel) before to manipulate place and/or
+model files, this migration guide will help you get started with accomplishing the same tasks in
+Lune.
+
+## Drop-in Compatibility
+
+This guide provides a module which translates all of the relevant Lune APIs to their Remodel
+equivalents. For more details or manual migration steps, check out
+[Differences Between Lune & Remodel](#differences-between-lune--remodel) below.
+
+<Steps>
+
+1. Copy the [remodel module](https://github.com/lune-org/docs/blob/main/modules/remodel.luau) and place it in a file named `remodel.luau`.
+
+    This module is quite large, but you will not need to read through it unless you want to know about
+    the internal details of how Remodel used to work.
+
+2. Next, create another script next to your `remodel.luau`. We will be naming it `example.luau`, but
+   you can name it whatever you want. This example code is from one of the legacy Remodel-native
+   example scripts, with only the top line added:
+
+    ```luau
+    // remodel.luau
+    local remodel = require("./remodel")
+
+    -- One use for Remodel is to move the terrain of one place into another place.
+    local inputGame = remodel.readPlaceFile("input-place.rbxlx")
+    local outputGame = remodel.readPlaceFile("output-place.rbxlx")
+
+    -- This isn't possible inside Roblox, but works just fine in Remodel!
+    outputGame.Workspace.Terrain:Destroy()
+    inputGame.Workspace.Terrain.Parent = outputGame.Workspace
+
+    remodel.writePlaceFile("output-place-updated.rbxlx", outputGame)
+    ```
+
+3. Finally, run the script you've created by providing the script name to Lune, in our case `example`,
+   without the luau file extension. Everything should work the same way it did when running natively in
+   Remodel, now running in Lune 🚀
+
+    ```bash title="Terminal"
+    lune run example
+    ```
+
+</Steps>
+
+## Differences Between Lune & Remodel
+
+Most APIs previously found in Remodel have direct equivalents in Lune, below are some direct links
+to APIs that are equivalent or very similar.
+
+<details>
+<summary>Places & Models</summary>
+
+- `remodel.readPlaceFile` ➡ [`fs.readFile`](../api-reference/fs.md#readfile) &
+  [`roblox.deserializePlace`](../api-reference/roblox.md#deserializeplace)
+- `remodel.readModelFile` ➡ [`fs.readFile`](../api-reference/fs.md#readfile) &
+  [`roblox.deserializeModel`](../api-reference/roblox.md#deserializemodel)
+- `remodel.readPlaceAsset` ➡ [`net.request`](../api-reference/net.md#request) &
+  [`roblox.deserializePlace`](../api-reference/roblox.md#deserializeplace)
+- `remodel.readModelAsset` ➡ [`net.request`](../api-reference/net.md#request) &
+  [`roblox.deserializeModel`](../api-reference/roblox.md#deserializemodel)
+- `remodel.writePlaceFile` ➡ [`roblox.serializePlace`](../api-reference/roblox.md#serializeplace)
+  & [`fs.writeFile`](../api-reference/fs.md#writefile)
+- `remodel.writeModelFile` ➡ [`roblox.serializeModel`](../api-reference/roblox.md#serializemodel)
+  & [`fs.writeFile`](../api-reference/fs.md#writefile)
+- `remodel.writeExistingPlaceAsset` ➡
+  [`roblox.serializePlace`](../api-reference/roblox.md#serializeplace) &
+  [`net.request`](../api-reference/net.md#request)
+- `remodel.writeExistingModelAsset` ➡
+  [`roblox.serializeModel`](../api-reference/roblox.md#serializemodel) &
+  [`net.request`](../api-reference/net.md#request)
+- `remodel.getRawProperty` ➡ no equivalent, you can get properties directly by indexing
+- `remodel.setRawProperty` ➡ no equivalent, you can set properties directly by indexing
+
+</details>
+
+<details>
+<summary>Files & Directories</summary>
+
+- `remodel.readFile` ➡ [`fs.readFile`](../api-reference/fs.md#readfile)
+- `remodel.readDir` ➡ [`fs.readDir`](../api-reference/fs.md#readdir)
+- `remodel.writeFile` ➡ [`fs.writeFile`](../api-reference/fs.md#writefile)
+- `remodel.createDirAll` ➡ [`fs.writeDir`](../api-reference/fs.md#writedir)
+- `remodel.removeFile` ➡ [`fs.removeFile`](../api-reference/fs.md#removefile)
+- `remodel.removeDir` ➡ [`fs.removeDir`](../api-reference/fs.md#removedir)
+- `remodel.isFile` ➡ [`fs.isFile`](../api-reference/fs.md#isfile)
+- `remodel.isDir` ➡ [`fs.isDir`](../api-reference/fs.md#isdir)
+
+</details>
+
+<details>
+<summary>JSON</summary>
+
+- `json.fromString` ➡ [`serde.decode`](../api-reference/serde.md#decode)
+- `json.toString` ➡ [`serde.encode`](../api-reference/serde.md#encode)
+- `json.toStringPretty` ➡ [`serde.encode`](../api-reference/serde.md#encode)
+
+</details>
+
+Since Lune is meant to be a general-purpose Luau runtime, there are also some more general
+differences, and Lune takes a different approach from Remodel in certain areas:
+
+- Lune runs Luau instead of Lua 5.3.
+- APIs are more loosely coupled, meaning that a task may require more steps using Lune. This also
+  means that Lune is more flexible and supports more use cases.
+- Built-in libraries are not accessible from global variables, you have to explicitly import them
+  using `require("@lune/library-name")`.
+- Arguments given to scripts are not available in `...`, you have to use
+  [`process.args`](../api-reference/process.md#args) instead.
+- Lune generally supports all of the Roblox datatypes that are gettable/settable on instance
+  properties. For a full list of available datatypes, check out the
+  [API Status](./4-api-status.md) page.
+
+---
+
+There may be more differences than are listed here, and the Lune-specific guides and examples may
+provide more info, but this should be all you need to know to migrate from Remodel. Good luck!
