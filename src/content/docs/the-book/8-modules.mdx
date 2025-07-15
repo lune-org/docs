@@ -20,8 +20,8 @@ Let's use this directory & file tree structure for our examples:
 - main.luau
 - sibling.luau
 - modules
-    - init.luau
-    - module.luau
+  - init.luau
+  - module.luau
 
 </FileTree>
 
@@ -29,8 +29,8 @@ Let's use this directory & file tree structure for our examples:
 	<TabItem label="Main File">
 	```luau
 	// main.luau
-	local sibling = require("sibling")
-	local modules = require("modules")
+	local sibling = require("./sibling")
+	local modules = require("./modules")
 
     print(sibling.Hello) --> World
 
@@ -81,9 +81,9 @@ This is the standard behavior according to Luau require-by-string,
 which you can read more about on the official Luau documentation site.
 
 <Aside>
-	**Q:** Wait, hold on... The `main` script requires the _**directory**_
-	called `modules`? <br />
-	**A:** Yep, that's right. The file name `init` is special, and putting a
-	file named `init.luau` in a directory will let you use `require` directly on
-	the directory. Similar to `index.js` in JavaScript or `mod.rs` in Rust.
+  **Q:** Wait, hold on... The `main` script requires the _**directory**_ called
+  `modules`? <br />
+  **A:** Yep, that's right. The file name `init` is special, and putting a file
+  named `init.luau` in a directory will let you use `require` directly on the
+  directory. Similar to `index.js` in JavaScript or `mod.rs` in Rust.
 </Aside>
