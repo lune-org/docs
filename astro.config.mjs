@@ -6,7 +6,11 @@ import starlight from "@astrojs/starlight";
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: "My Docs",
+			title: "Lune",
+			logo: {
+				src: "./src/assets/logo.svg",
+				replacesTitle: true,
+			},
 			social: [
 				{
 					icon: "github",
