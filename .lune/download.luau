@@ -12,7 +12,7 @@ if commit ~= nil and #commit > 0 then
 	name = commit
 else
 	print("Looking for the latest tag")
-	local tagsResult = process.spawn("git", {
+	local tagsResult = process.exec("git", {
 		"ls-remote",
 		"--tags",
 		"--sort=-v:refname",
@@ -45,7 +45,7 @@ assert(downloaded.ok, downloaded.statusMessage)
 
 fs.writeFile("temp/download.zip", downloaded.body)
 
-local unzipResult = process.spawn("unzip", {
+local unzipResult = process.exec("unzip", {
 	"temp/download.zip",
 	"-d",
 	"temp/download",

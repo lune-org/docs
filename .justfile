@@ -1,7 +1,7 @@
 # Installs development tooling for documentation
 install-dev-tools:
-	aftman install
-	npm install
+	rokit install
+	bun install
 	cargo binstall moonwave
 
 # Extract documentation from the main repository using moonwave
@@ -16,8 +16,8 @@ generate-documentation:
 
 # Builds and generates a static site directory
 build:
-	npm run build
+	bun run build
 
 # Starts a local development server for the docs site
 dev:
-	npm run dev
+	bun run dev

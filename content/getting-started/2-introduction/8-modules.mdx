@@ -1,0 +1,85 @@
+import { FileTree, Tabs, Tab, Callout } from "nextra/components";
+
+# Modules
+
+At this point you know how the most important built-in libraries in Lune work and how to use them,
+and your code is probably getting longer and more difficult to read. Splitting your code into
+multiple files can help you stay organized.
+
+Modularizing your code and splitting it across several files in Lune is different from other
+versions of Lua and Luau, and more similar to how things work in other languages such as JavaScript.
+
+## Example File Tree
+
+Let's use this directory & file tree structure for our examples:
+
+<FileTree>
+	<FileTree.Folder name="-" defaultOpen>
+		<FileTree.File name="main.luau" />
+		<FileTree.File name="sibling.luau" />
+		<FileTree.Folder name="modules" defaultOpen>
+			<FileTree.File name="init.luau" />
+			<FileTree.File name="module.luau" />
+		</FileTree.Folder>
+	</FileTree.Folder>
+</FileTree>
+
+<Tabs items={['main', 'sibling', 'modules/init', 'modules/module']}>
+	<Tab>
+	```luau copy filename="main.luau"
+	local sibling = require("sibling")
+	local modules = require("modules")
+
+    print(sibling.Hello) --> World
+
+    print(modules.Module.Foo) --> Bar
+    print(modules.Module.Fizz) --> Buzz
+
+    print(modules.Sibling.Hello) --> World
+    ```
+    </Tab>
+    <Tab>
+    ```luau copy filename="sibling.luau"
+    return {
+    	Hello = "World",
+    }
+    ```
+    </Tab>
+    <Tab>
+    ```luau copy filename="modules/init.luau"
+    return {
+    	Module = require("module"),
+    	Sibling = require("../sibling"),
+    }
+    ```
+    </Tab>
+    <Tab>
+    ```luau copy filename="modules/module.luau"
+    return {
+    	Foo = "Bar",
+    	Fizz = "Buzz",
+    }
+    ```
+    </Tab>
+
+</Tabs>
+
+## File Require Statements
+
+Let's decipher these files and what they are doing:
+
+- The `main` script requires `sibling` and `modules` next to it
+- The `modules/init` script requires `module` next to it, and `sibling` going up one directory
+  using `../`
+
+In the above `require` statements, we can see that are relative to the file that they are in, and in
+Lune this is always the case, except for built-in libraries, which always start with an at sign
+(`@`).
+
+<Callout type="info" emoji="❔">
+	**Q:** Wait, hold on... The `main` script requires the _**directory**_
+	called `modules`? <br />
+	**A:** Yep, that's right. The file name `init` is special, and putting a
+	file named `init.luau` in a directory will let you use `require` directly on
+	the directory. Similar to `index.js` in JavaScript or `mod.rs` in Rust.
+</Callout>

@@ -3,8 +3,9 @@
 	"version": "0.0.1",
 	"description": "Documentation site for Lune",
 	"scripts": {
-		"dev": "next dev",
-		"build": "next build && next export"
+		"dev": "next",
+		"build": "next build",
+		"start": "next start"
 	},
 	"repository": {
 		"type": "git",
@@ -15,16 +16,14 @@
 	},
 	"homepage": "https://github.com/lune-orc/docs#readme",
 	"dependencies": {
-		"next": "^13.5.6",
-		"nextra": "^2.13.4",
-		"nextra-theme-docs": "^2.13.4",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1"
+		"next": "^15.4.1",
+		"nextra": "^4.2.17",
+		"nextra-theme-docs": "^4.2.17",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
 	},
 	"devDependencies": {
-		"@types/node": "18.11.10",
-		"eslint": "^8.57.0",
-		"next": "^13.4.12",
-		"typescript": "4.9.5"
+		"@types/node": "^22.16.4",
+		"typescript": "5.8.3"
 	}
 }

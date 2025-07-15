@@ -67,7 +67,7 @@ fs.writeFile(`pages/api-reference/_meta.json`, meta)
 
 -- Finally, call out to prettier to ensure that our
 -- generated markdown files are formatted properly
-process.spawn("prettier", {
+process.exec("prettier", {
 	"--write",
 	"pages/api-reference/",
 })

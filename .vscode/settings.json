@@ -1,9 +1,0 @@
-{
-	"luau-lsp.types.roblox": false,
-	"luau-lsp.sourcemap.enabled": false,
-	"luau-lsp.ignoreGlobs": ["temp/**"],
-	"luau-lsp.require.mode": "relativeToFile",
-	"luau-lsp.require.directoryAliases": {
-		"@lune/": "~/.lune/.typedefs/0.8.5/"
-	}
-}

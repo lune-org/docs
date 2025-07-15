@@ -1,5 +1,0 @@
-[tools]
-just = "readysetplay/just@1.8.0"
-luau-lsp = "JohnnyMorganz/luau-lsp@1.29.1"
-lune = "lune-org/lune@0.8.5"
-stylua = "JohnnyMorganz/StyLua@0.20.0"

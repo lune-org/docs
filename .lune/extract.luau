@@ -18,7 +18,7 @@ else
 end
 
 -- Run moonwave to parse typedef files and extract documentation, write to file
-local moonwaveResult = process.spawn("moonwave-extractor", { "extract", sourceDir })
+local moonwaveResult = process.exec("moonwave-extractor", { "extract", sourceDir })
 assert(moonwaveResult.ok and #moonwaveResult.stderr <= 0, moonwaveResult.stderr)
 fs.writeFile("temp/moonwave.json", moonwaveResult.stdout)
 
