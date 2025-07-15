@@ -2,22 +2,20 @@
 title: Hello, Lune!
 ---
 
-Congratulations! Lune is now set up and you are ready to start writing scripts 🎉
+Welcome to The Lune Book! Now that you have Lune installed, you're ready to start writing scripts and exploring what makes Lune special.
 
-If you've already written some kind of Lua (or Luau) script before, the examples provided in the
-overview below should make you feel right at home. They are organized in order of least complex to
-most complex, and you don't really have to read them all to understand how Lune works, though it may
-help you out. Good luck!
+If you've written Lua or Luau scripts before, you'll feel right at home with the examples in this book. Even if you haven't, don't worry - this guide will take you through everything step by step.
 
-## Overview
+The chapters in this book are organized to build on each other, starting with the basics, and gradually introducing more powerful features. Here's a quick overview:
 
-1. [Hello, Lune!](./1-hello-lune.md) (you are here)
-2. [Built-in Libraries](./2-built-in-libraries.md)
-3. [Standard I/O](./3-standard-io.mdx)
-4. [Script Arguments](./4-script-arguments.md)
-5. [Network Requests](./5-network-requests.mdx)
-6. [Files & Directories](./6-files-and-directories.mdx)
-7. [Environment Variables](./7-environment-variables.md)
-8. [Modules](./8-modules.mdx)
-9. [Task Scheduler](./9-task-scheduler.mdx)
-10. [Spawning Processes](./10-spawning-processes.md)
+1. [Hello, Lune!](./1-hello-lune) _(you are here)_
+2. [The Standard Library](./2-standard-library)
+3. [Input & Output](./3-input-output)
+4. [Arguments](./4-arguments)
+5. [Networking](./5-networking)
+6. [Working with Files](./6-working-with-files)
+7. [Modules](./7-modules)
+8. [Spawning Programs](./8-spawning-programs)
+9. [Task Scheduler](./9-task-scheduler)
+
+By the end of this book, you'll understand how to use Lune for everything from simple automation scripts to complex networking applications. Let's get started!
