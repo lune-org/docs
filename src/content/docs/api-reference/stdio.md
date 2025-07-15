@@ -19,6 +19,9 @@ stdio.write("World! ")
 stdio.write("All on the same line")
 stdio.ewrite("\nAnd some error text, too")
 
+-- Reading a single line from stdin
+local line = stdio.readLine()
+
 -- Reading the entire input from stdin
 local input = stdio.readToEnd()
 ```
@@ -41,8 +44,7 @@ Prompts for user input using the wanted kind of prompt:
 
 - `message` The message to show the user
 
-- `defaultOrOptions` The default value for the prompt, or options to choose from for selection
-  prompts
+- `defaultOrOptions` The default value for the prompt, or options to choose from for selection prompts
 
 ---
 
@@ -127,6 +129,18 @@ Writes a string directly to stderr, without any newline.
 #### Parameters
 
 - `s` The string to write to stderr
+
+---
+
+### readLine
+
+Reads a single line from stdin.
+
+If stdin is closed, returns all input up until its closure.
+
+#### Returns
+
+- The input from stdin
 
 ---
 

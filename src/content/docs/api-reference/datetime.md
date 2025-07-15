@@ -12,8 +12,11 @@ local DateTime = require("@lune/datetime")
 -- Creates a DateTime for the current exact moment in time
 local now = DateTime.now()
 
--- Formats the current moment in time as an ISO 8601 string
-print(now:toIsoDate())
+-- Formats the current moment in time as an RFC 3339 string
+print(now:toRfc3339())
+
+-- Formats the current moment in time as an RFC 2822 string
+print(now:toRfc2822())
 
 -- Formats the current moment in time, using the local
 -- time, the French locale, and the specified time string
@@ -42,6 +45,24 @@ DateTime.fromUnixTimestamp(871978212313.321)
 print(now:toUniversalTime())
 ```
 
+## Properties
+
+### unixTimestamp
+
+`number`
+
+Number of seconds passed since the UNIX epoch.
+
+---
+
+### unixTimestampMillis
+
+`number`
+
+Number of milliseconds passed since the UNIX epoch.
+
+---
+
 ## Constructors
 
 ### now
@@ -58,16 +79,16 @@ Returns a `DateTime` representing the current moment in time.
 
 Creates a new `DateTime` from the given UNIX timestamp.
 
-This timestamp may contain both a whole and fractional part - where the fractional part denotes
-milliseconds / nanoseconds.
+This timestamp may contain both a whole and fractional part -
+where the fractional part denotes milliseconds / nanoseconds.
 
 Example usage of fractions:
 
 - `DateTime.fromUnixTimestamp(123456789.001)` - one millisecond
 - `DateTime.fromUnixTimestamp(123456789.000000001)` - one nanosecond
 
-Note that the fractional part has limited precision down to exactly one nanosecond, any fraction
-that is more precise will get truncated.
+Note that the fractional part has limited precision down to exactly
+one nanosecond, any fraction that is more precise will get truncated.
 
 #### Parameters
 
@@ -94,8 +115,8 @@ The given table must contain the following values:
 | `minute` | `number` | `0 -> 59`      |
 | `second` | `number` | `0 -> 60`      |
 
-An additional `millisecond` value may also be included, and should be within the range `0 -> 999`,
-but is optional.
+An additional `millisecond` value may also be included,
+and should be within the range `0 -> 999`, but is optional.
 
 Any non-integer values in the given table will be rounded down.
 
@@ -103,8 +124,7 @@ Any non-integer values in the given table will be rounded down.
 
 This constructor is fallible and may throw an error in the following situations:
 
-- Date units (year, month, day) were given that produce an invalid date. For example, January 32nd
-  or February 29th on a non-leap year.
+- Date units (year, month, day) were given that produce an invalid date. For example, January 32nd or February 29th on a non-leap year.
 
 #### Parameters
 
@@ -131,8 +151,8 @@ The given table must contain the following values:
 | `minute` | `number` | `0 -> 59`      |
 | `second` | `number` | `0 -> 60`      |
 
-An additional `millisecond` value may also be included, and should be within the range `0 -> 999`,
-but is optional.
+An additional `millisecond` value may also be included,
+and should be within the range `0 -> 999`, but is optional.
 
 Any non-integer values in the given table will be rounded down.
 
@@ -140,8 +160,7 @@ Any non-integer values in the given table will be rounded down.
 
 This constructor is fallible and may throw an error in the following situations:
 
-- Date units (year, month, day) were given that produce an invalid date. For example, January 32nd
-  or February 29th on a non-leap year.
+- Date units (year, month, day) were given that produce an invalid date. For example, January 32nd or February 29th on a non-leap year.
 
 #### Parameters
 
@@ -155,12 +174,14 @@ This constructor is fallible and may throw an error in the following situations:
 
 ### fromIsoDate
 
+**DEPRECATED**: Use `DateTime.fromRfc3339` instead.
+
 Creates a new `DateTime` from an ISO 8601 date-time string.
 
 #### Errors
 
-This constructor is fallible and may throw an error if the given string does not strictly follow the
-ISO 8601 date-time string format.
+This constructor is fallible and may throw an error if the given
+string does not strictly follow the ISO 8601 date-time string format.
 
 Some examples of valid ISO 8601 date-time strings are:
 
@@ -178,14 +199,64 @@ Some examples of valid ISO 8601 date-time strings are:
 
 ---
 
+### fromRfc3339
+
+Creates a new `DateTime` from an RFC 3339 date-time string.
+
+#### Errors
+
+This constructor is fallible and may throw an error if the given
+string does not strictly follow the RFC 3339 date-time string format.
+
+Some examples of valid RFC 3339 date-time strings are:
+
+- `2020-02-22T18:12:08Z`
+- `2000-01-31T12:34:56+05:00`
+- `1970-01-01T00:00:00.055Z`
+
+#### Parameters
+
+- `rfc3339Date` `string` An RFC 3339 formatted string
+
+#### Returns
+
+- `DateTime` The new DateTime object
+
+---
+
+### fromRfc2822
+
+Creates a new `DateTime` from an RFC 2822 date-time string.
+
+#### Errors
+
+This constructor is fallible and may throw an error if the given
+string does not strictly follow the RFC 2822 date-time string format.
+
+Some examples of valid RFC 2822 date-time strings are:
+
+- `Fri, 21 Nov 1997 09:55:06 -0600`
+- `Tue, 1 Jul 2003 10:52:37 +0200`
+- `Mon, 23 Dec 2024 01:58:48 GMT`
+
+#### Parameters
+
+- `rfc2822Date` `string` An RFC 2822 formatted string
+
+#### Returns
+
+- `DateTime` The new DateTime object
+
+---
+
 ## Methods
 
 ### formatLocalTime
 
 Formats this `DateTime` using the given `formatString` and `locale`, as local time.
 
-The given `formatString` is parsed using a `strftime`/`strptime`-inspired date and time formatting
-syntax, allowing tokens such as the following:
+The given `formatString` is parsed using a `strftime`/`strptime`-inspired
+date and time formatting syntax, allowing tokens such as the following:
 
 | Token | Example  | Description   |
 | ----- | -------- | ------------- |
@@ -199,8 +270,8 @@ syntax, allowing tokens such as the following:
 For a full reference of all available tokens, see the
 [chrono documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html).
 
-If not provided, `formatString` and `locale` will default to `"%Y-%m-%d %H:%M:%S"` and `"en"`
-(english) respectively.
+If not provided, `formatString` and `locale` will default
+to `"%Y-%m-%d %H:%M:%S"` and `"en"` (english) respectively.
 
 #### Parameters
 
@@ -220,8 +291,8 @@ If not provided, `formatString` and `locale` will default to `"%Y-%m-%d %H:%M:%S
 
 Formats this `DateTime` using the given `formatString` and `locale`, as UTC (universal) time.
 
-The given `formatString` is parsed using a `strftime`/`strptime`-inspired date and time formatting
-syntax, allowing tokens such as the following:
+The given `formatString` is parsed using a `strftime`/`strptime`-inspired
+date and time formatting syntax, allowing tokens such as the following:
 
 | Token | Example  | Description   |
 | ----- | -------- | ------------- |
@@ -235,8 +306,8 @@ syntax, allowing tokens such as the following:
 For a full reference of all available tokens, see the
 [chrono documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html).
 
-If not provided, `formatString` and `locale` will default to `"%Y-%m-%d %H:%M:%S"` and `"en"`
-(english) respectively.
+If not provided, `formatString` and `locale` will default
+to `"%Y-%m-%d %H:%M:%S"` and `"en"` (english) respectively.
 
 #### Parameters
 
@@ -254,6 +325,8 @@ If not provided, `formatString` and `locale` will default to `"%Y-%m-%d %H:%M:%S
 
 ### toIsoDate
 
+**DEPRECATED**: Use `DateTime.toRfc3339` instead.
+
 Formats this `DateTime` as an ISO 8601 date-time string.
 
 Some examples of ISO 8601 date-time strings are:
@@ -269,6 +342,46 @@ Some examples of ISO 8601 date-time strings are:
 #### Returns
 
 - `string` The ISO 8601 formatted string
+
+---
+
+### toRfc2822
+
+Formats this `DateTime` as an RFC 2822 date-time string.
+
+Some examples of RFC 2822 date-time strings are:
+
+- `Fri, 21 Nov 1997 09:55:06 -0600`
+- `Tue, 1 Jul 2003 10:52:37 +0200`
+- `Mon, 23 Dec 2024 01:58:48 GMT`
+
+#### Parameters
+
+- `self` DateTime
+
+#### Returns
+
+- `string` The RFC 2822 formatted string
+
+---
+
+### toRfc3339
+
+Formats this `DateTime` as an RFC 3339 date-time string.
+
+Some examples of RFC 3339 date-time strings are:
+
+- `2020-02-22T18:12:08Z`
+- `2000-01-31T12:34:56+05:00`
+- `1970-01-01T00:00:00.055Z`
+
+#### Parameters
+
+- `self` DateTime
+
+#### Returns
+
+- `string` The RFC 3339 formatted string
 
 ---
 
@@ -358,11 +471,11 @@ This is a dictionary that will contain the following values:
 - `minute` - Minute(s), in the range 0 -> 59
 - `second` - Second(s), in the range 0 -> 60, where 60 is a leap second
 
-An additional `millisecond` value may also be included, and should be within the range `0 -> 999`,
-but is optional.
+An additional `millisecond` value may also be included,
+and should be within the range `0 -> 999`, but is optional.
 
-However, any method returning this type should be guaranteed to include milliseconds - see
-individual methods to verify.
+However, any method returning this type should be guaranteed
+to include milliseconds - see individual methods to verify.
 
 ---
 

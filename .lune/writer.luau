@@ -79,8 +79,13 @@ local function writeFunctions(fns: { moonwave.Function })
 	end
 end
 
-local function writeMarkdown(item: moonwave.Item)
-	write(`# {item.name}\n\n`)
+local function writeMarkdown(item: moonwave.Item, isFirstWrite: boolean)
+	if not isFirstWrite then
+		-- Astro will automatically insert a H1 with the title in the frontmatter,
+		-- so if we had inserted one here, we would have duplicate H1s
+		write(`# {item.name}\n\n`)
+	end
+
 	writeDesc(item.desc)
 
 	if #item.properties > 0 then

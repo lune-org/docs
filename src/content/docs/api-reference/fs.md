@@ -191,9 +191,9 @@ An error will be thrown in the following situations:
 
 Moves a file or directory to a new path.
 
-Throws an error if a file or directory already exists at the target path. This can be bypassed by
-passing `true` as the third argument, or a dictionary of options. Refer to the documentation for
-`WriteOptions` for specific option keys and their values.
+Throws an error if a file or directory already exists at the target path.
+This can be bypassed by passing `true` as the third argument, or a dictionary of options.
+Refer to the documentation for `WriteOptions` for specific option keys and their values.
 
 An error will be thrown in the following situations:
 
@@ -207,8 +207,7 @@ An error will be thrown in the following situations:
 
 - `to` The path to move to
 
-- `overwriteOrOptions` Options for the target path, such as if should be overwritten if it already
-  exists
+- `overwriteOrOptions` Options for the target path, such as if should be overwritten if it already exists
 
 ---
 
@@ -216,9 +215,9 @@ An error will be thrown in the following situations:
 
 Copies a file or directory recursively to a new path.
 
-Throws an error if a file or directory already exists at the target path. This can be bypassed by
-passing `true` as the third argument, or a dictionary of options. Refer to the documentation for
-`WriteOptions` for specific option keys and their values.
+Throws an error if a file or directory already exists at the target path.
+This can be bypassed by passing `true` as the third argument, or a dictionary of options.
+Refer to the documentation for `WriteOptions` for specific option keys and their values.
 
 An error will be thrown in the following situations:
 
@@ -231,8 +230,7 @@ An error will be thrown in the following situations:
 
 - `to` The path to copy to
 
-- `overwriteOrOptions` Options for the target path, such as if should be overwritten if it already
-  exists
+- `overwriteOrOptions` Options for the target path, such as if should be overwritten if it already exists
 
 ---
 
@@ -256,16 +254,13 @@ This is a dictionary that will contain the following values:
 
 - `kind` - If the target path is a `file`, `dir` or `symlink`
 - `exists` - If the target path exists
-- `createdAt` - The timestamp represented as a `DateTime` object at which the file or directory
-  was created
-- `modifiedAt` - The timestamp represented as a `DateTime` object at which the file or directory
-  was last modified
-- `accessedAt` - The timestamp represented as a `DateTime` object at which the file or directory
-  was last accessed
+- `createdAt` - The timestamp represented as a `DateTime` object at which the file or directory was created
+- `modifiedAt` - The timestamp represented as a `DateTime` object at which the file or directory was last modified
+- `accessedAt` - The timestamp represented as a `DateTime` object at which the file or directory was last accessed
 - `permissions` - Current permissions for the file or directory
 
-Note that timestamps are relative to the unix epoch, and may not be accurate if the system clock is
-not accurate.
+Note that timestamps are relative to the unix epoch, and
+may not be accurate if the system clock is not accurate.
 
 ---
 
@@ -275,7 +270,6 @@ Options for filesystem APIs what write to files and/or directories.
 
 This is a dictionary that may contain one or more of the following values:
 
-- `overwrite` - If the target path should be overwritten or not, in the case that it already
-  exists
+- `overwrite` - If the target path should be overwritten or not, in the case that it already exists
 
 ---

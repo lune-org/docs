@@ -49,8 +49,8 @@ This constructor throws an error if the given pattern is invalid.
 
 Check if the given text matches the regular expression.
 
-This method may be slightly more efficient than calling `find` if you only need to know if the text
-matches the pattern.
+This method may be slightly more efficient than calling `find`
+if you only need to know if the text matches the pattern.
 
 #### Parameters
 
@@ -155,70 +155,6 @@ Replaces all matches in the given text with the given replacer string.
 # RegexCaptures
 
 Captures from a regular expression.
-
-## Methods
-
-### get
-
-Returns the match at the given index, if one exists.
-
-#### Parameters
-
-- `self` RegexCaptures
-
-- `index` `number` The index of the match to get
-
-#### Returns
-
-- `RegexMatch` The match, if one exists
-
----
-
-### group
-
-Returns the match for the given named match group, if one exists.
-
-#### Parameters
-
-- `self` RegexCaptures
-
-- `group` `string` The name of the group to get
-
-#### Returns
-
-- `RegexMatch` The match, if one exists
-
----
-
-### format
-
-Formats the captures using the given format string.
-
-#### Example usage
-
-```lua
-local regex = require("@lune/regex")
-
-local re = regex.new("(?<day>[0-9]{2})-(?<month>[0-9]{2})-(?<year>[0-9]{4})")
-
-local caps = re:captures("On 14-03-2010, I became a Tenneessee lamb.");
-assert(caps ~= nil, "Example pattern should match example text")
-
-local formatted = caps:format("year=$year, month=$month, day=$day")
-print(formatted) -- "year=2010, month=03, day=14"
-```
-
-#### Parameters
-
-- `self` RegexCaptures
-
-- `format` `string` The format string to use
-
-#### Returns
-
-- `string` The formatted string
-
----
 
 # RegexMatch
 

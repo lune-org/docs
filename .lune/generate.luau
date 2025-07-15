@@ -17,7 +17,7 @@ local generatedFiles = {} :: { [number]: {
 } }
 for _, item in items do
 	local file = item.source.path
-	local name = string.match(file, "(.+)%.luau")
+	local name = string.match(file, "lune%-std%-(.+)/types%.d%.luau")
 	assert(name ~= nil, "Failed to remove luau suffix from file name")
 
 	-- If we have an existing entry, such as when we have multiple
@@ -32,42 +32,32 @@ for _, item in items do
 	end
 
 	if existing then
-		existing.content ..= writeMarkdown(item)
+		existing.content ..= writeMarkdown(item, false)
 	else
+		local content = `---\ntitle: {item.name}\n---\n\n`
+		content ..= writeMarkdown(item, true)
 		table.insert(generatedFiles, {
 			displayName = item.name,
 			name = string.lower(name),
-			content = writeMarkdown(item),
+			content = content,
 		})
 	end
 end
 
 -- Remove any old files, generate new ones
-if fs.isDir("pages/api-reference") then
-	fs.removeDir("pages/api-reference")
+if fs.isDir("src/content/docs/api-reference") then
+	fs.removeDir("src/content/docs/api-reference")
 end
-fs.writeDir("pages/api-reference")
+fs.writeDir("src/content/docs/api-reference")
 for _, file in generatedFiles do
-	fs.writeFile(`pages/api-reference/{file.name}.md`, file.content)
+	print(file)
+	fs.writeFile(`src/content/docs/api-reference/{file.name}.md`, file.content)
 end
-
--- Also generate a meta file to make the sidebar look nicer, note that
--- we generate it manually instead of serializing as json because that
--- would not preserve order and the sidebar is order-sensitive
-local meta = "{\n"
-for index, file in generatedFiles do
-	meta ..= `    "{file.name}": "{file.displayName}"`
-	if index == #generatedFiles then
-		meta ..= "\n}"
-	else
-		meta ..= ",\n"
-	end
-end
-fs.writeFile(`pages/api-reference/_meta.json`, meta)
 
 -- Finally, call out to prettier to ensure that our
 -- generated markdown files are formatted properly
-process.exec("prettier", {
+process.exec("bun", {
+	"prettier",
 	"--write",
-	"pages/api-reference/",
+	"src/content/docs/api-reference/",
 })

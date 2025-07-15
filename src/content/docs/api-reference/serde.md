@@ -39,8 +39,7 @@ See [`EncodeDecodeFormat`] for a list of supported formats.
 
 - `value` The value to encode
 
-- `pretty` If the encoded string should be human-readable, including things such as newlines and
-  spaces. Only supported for json and toml formats, and defaults to false
+- `pretty` If the encoded string should be human-readable, including things such as newlines and spaces. Only supported for json and toml formats, and defaults to false
 
 #### Returns
 
@@ -78,6 +77,8 @@ See [`CompressDecompressFormat`] for a list of supported formats.
 
 - `s` The string to compress
 
+- `level` The compression level to use, clamped to the format's limits. The best compression level is used by default
+
 #### Returns
 
 - The compressed string
@@ -104,7 +105,8 @@ See [`CompressDecompressFormat`] for a list of supported formats.
 
 ### hash
 
-Hashes the given message using the given algorithm and returns the hash as a hex string.
+Hashes the given message using the given algorithm
+and returns the hash as a hex string.
 
 See [`HashAlgorithm`] for a list of supported algorithms.
 
@@ -122,8 +124,8 @@ See [`HashAlgorithm`] for a list of supported algorithms.
 
 ### hmac
 
-Hashes the given message using HMAC with the given secret and algorithm, returning the hash as a
-base64 string.
+Hashes the given message using HMAC with the given secret
+and algorithm, returning the hash as a base64 string.
 
 See [`HashAlgorithm`] for a list of supported algorithms.
 

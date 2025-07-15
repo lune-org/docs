@@ -31,8 +31,9 @@ fs.writeFile("myPlaceFile.rbxl", newPlaceFile)
 
 Deserializes a place into a DataModel instance.
 
-This function accepts a string of contents, _not_ a file path. If reading a place file from a file
-path is desired, `fs.readFile` can be used and the resulting string may be passed to this function.
+This function accepts a string of contents, _not_ a file path.
+If reading a place file from a file path is desired, `fs.readFile`
+can be used and the resulting string may be passed to this function.
 
 #### Example usage
 
@@ -58,8 +59,9 @@ local game = roblox.deserializePlace(placeFile)
 
 Deserializes a model into an array of instances.
 
-This function accepts a string of contents, _not_ a file path. If reading a model file from a file
-path is desired, `fs.readFile` can be used and the resulting string may be passed to this function.
+This function accepts a string of contents, _not_ a file path.
+If reading a model file from a file path is desired, `fs.readFile`
+can be used and the resulting string may be passed to this function.
 
 #### Example usage
 
@@ -101,8 +103,7 @@ fs.writeFile("filePath.rbxl", placeFile)
 
 - `dataModel` The DataModel for the place to serialize
 
-- `xml` If the place should be serialized as xml or not. Defaults to `false`, meaning the place
-  gets serialized using the binary format and not xml.
+- `xml` If the place should be serialized as xml or not. Defaults to `false`, meaning the place gets serialized using the binary format and not xml.
 
 #### Returns
 
@@ -130,8 +131,7 @@ fs.writeFile("filePath.rbxm", modelFile)
 
 - `instances` The array of instances to serialize
 
-- `xml` If the model should be serialized as xml or not. Defaults to `false`, meaning the model
-  gets serialized using the binary format and not xml.
+- `xml` If the model should be serialized as xml or not. Defaults to `false`, meaning the model gets serialized using the binary format and not xml.
 
 #### Returns
 
@@ -143,14 +143,16 @@ fs.writeFile("filePath.rbxm", modelFile)
 
 Gets the current auth cookie, for usage with Roblox web APIs.
 
-Note that this auth cookie is formatted for use as a "Cookie" header, and that it contains
-restrictions so that it may only be used for official Roblox endpoints. To get the raw cookie value
-without any additional formatting, you can pass `true` as the first and only parameter.
+Note that this auth cookie is formatted for use as a "Cookie" header,
+and that it contains restrictions so that it may only be used for
+official Roblox endpoints. To get the raw cookie value without any
+additional formatting, you can pass `true` as the first and only parameter.
 
 #### Example usage
 
 ```lua
 local roblox = require("@lune/roblox")
+local serde = require("@lune/serde")
 local net = require("@lune/net")
 
 local cookie = roblox.getAuthCookie()
@@ -165,7 +167,7 @@ local response = net.request({
 	},
 })
 
-local responseTable = net.jsonDecode(response.body)
+local responseTable = serde.decode("json", response.body)
 local responseLocation = responseTable.locations[1].location
 print("Download link to place: " .. responseLocation)
 ```
@@ -218,15 +220,16 @@ end
 
 Implements a property for all instances of the given `className`.
 
-This takes into account class hierarchies, so implementing a property for the `BasePart` class will
-also implement it for `Part` and others, unless a more specific implementation is added to the
-`Part` class directly.
+This takes into account class hierarchies, so implementing a property
+for the `BasePart` class will also implement it for `Part` and others,
+unless a more specific implementation is added to the `Part` class directly.
 
 #### Behavior
 
-The given `getter` callback will be called each time the property is indexed, with the instance as
-its one and only argument. The `setter` callback, if given, will be called each time the property
-should be set, with the instance as the first argument and the property value as second.
+The given `getter` callback will be called each time the property is
+indexed, with the instance as its one and only argument. The `setter`
+callback, if given, will be called each time the property should be set,
+with the instance as the first argument and the property value as second.
 
 #### Example usage
 
@@ -270,8 +273,7 @@ print(part.CoolProp) --> 13
 
 - `getter` The function which will be called to get the property value when indexed.
 
-- `setter` The function which will be called to set the property value when indexed. Defaults to a
-  function that will error with a message saying the property is read-only.
+- `setter` The function which will be called to set the property value when indexed. Defaults to a function that will error with a message saying the property is read-only.
 
 ---
 
@@ -279,15 +281,16 @@ print(part.CoolProp) --> 13
 
 Implements a method for all instances of the given `className`.
 
-This takes into account class hierarchies, so implementing a method for the `BasePart` class will
-also implement it for `Part` and others, unless a more specific implementation is added to the
-`Part` class directly.
+This takes into account class hierarchies, so implementing a method
+for the `BasePart` class will also implement it for `Part` and others,
+unless a more specific implementation is added to the `Part` class directly.
 
 #### Behavior
 
-The given `callback` will be called every time the method is called, and will receive the instance
-it was called on as its first argument. The remaining arguments will be what the caller passed to
-the method, and all values returned from the callback will then be returned to the caller.
+The given `callback` will be called every time the method is called,
+and will receive the instance it was called on as its first argument.
+The remaining arguments will be what the caller passed to the method, and
+all values returned from the callback will then be returned to the caller.
 
 #### Example usage
 
@@ -311,5 +314,96 @@ part:TestMethod("Hello", "world!")
 - `methodName` The name of the method to implement.
 
 - `callback` The function which will be called when the method is called.
+
+---
+
+### studioApplicationPath
+
+Returns the path to the system's Roblox Studio executable.
+
+There is no guarantee that this will exist, but if Studio is installed this
+is where it will be.
+
+#### Example usage
+
+```lua
+local roblox = require("@lune/roblox")
+
+local pathToStudio = roblox.studioApplicationPath()
+print("Studio is located at:", pathToStudio)
+```
+
+#### Returns
+
+- string
+
+---
+
+### studioContentPath
+
+Returns the path to the `Content` folder of the system's current Studio
+install.
+
+This folder will always exist if Studio is installed.
+
+#### Example usage
+
+```lua
+local roblox = require("@lune/roblox")
+
+local pathToContent = roblox.studioContentPath()
+print("Studio's content folder is located at:", pathToContent)
+```
+
+#### Returns
+
+- string
+
+---
+
+### studioPluginPath
+
+Returns the path to the `plugin` folder of the system's current Studio
+install. This is the path where local plugins are installed.
+
+This folder may not exist if the user has never installed a local plugin.
+It will also not necessarily take into account custom plugin directories
+set from Studio.
+
+#### Example usage
+
+```lua
+local roblox = require("@lune/roblox")
+
+local pathToPluginFolder = roblox.studioPluginPath()
+print("Studio's plugin folder is located at:", pathToPluginFolder)
+```
+
+#### Returns
+
+- string
+
+---
+
+### studioBuiltinPluginPath
+
+Returns the path to the `BuiltInPlugin` folder of the system's current
+Studio install. This is the path where built-in plugins like the ToolBox
+are installed.
+
+This folder will always exist if Studio is installed.
+
+#### Example usage
+
+```lua
+local roblox = require("@lune/roblox")
+
+local pathToPluginFolder = roblox.studioBuiltinPluginPath()
+print("Studio's built-in plugin folder is located at:", pathToPluginFolder)
+```
+
+#### Returns
+
+- string
 
 ---
