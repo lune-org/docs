@@ -18,35 +18,35 @@ equivalents. For more details or manual migration steps, check out
 
 1. Copy the [remodel module](https://github.com/lune-org/docs/blob/main/modules/remodel.luau) and place it in a file named `remodel.luau`.
 
-    This module is quite large, but you will not need to read through it unless you want to know about
-    the internal details of how Remodel used to work.
+   This module is quite large, but you will not need to read through it unless you want to know about
+   the internal details of how Remodel used to work.
 
 2. Next, create another script next to your `remodel.luau`. We will be naming it `example.luau`, but
    you can name it whatever you want. This example code is from one of the legacy Remodel-native
    example scripts, with only the top line added:
 
-    ```luau
-    // remodel.luau
-    local remodel = require("./remodel")
+   ```luau
+   // remodel.luau
+   local remodel = require("./remodel")
 
-    -- One use for Remodel is to move the terrain of one place into another place.
-    local inputGame = remodel.readPlaceFile("input-place.rbxlx")
-    local outputGame = remodel.readPlaceFile("output-place.rbxlx")
+   -- One use for Remodel is to move the terrain of one place into another place.
+   local inputGame = remodel.readPlaceFile("input-place.rbxlx")
+   local outputGame = remodel.readPlaceFile("output-place.rbxlx")
 
-    -- This isn't possible inside Roblox, but works just fine in Remodel!
-    outputGame.Workspace.Terrain:Destroy()
-    inputGame.Workspace.Terrain.Parent = outputGame.Workspace
+   -- This isn't possible inside Roblox, but works just fine in Remodel!
+   outputGame.Workspace.Terrain:Destroy()
+   inputGame.Workspace.Terrain.Parent = outputGame.Workspace
 
-    remodel.writePlaceFile("output-place-updated.rbxlx", outputGame)
-    ```
+   remodel.writePlaceFile("output-place-updated.rbxlx", outputGame)
+   ```
 
 3. Finally, run the script you've created by providing the script name to Lune, in our case `example`,
    without the luau file extension. Everything should work the same way it did when running natively in
    Remodel, now running in Lune 🚀
 
-    ```bash title="Terminal"
-    lune run example
-    ```
+   ```bash title="Terminal"
+   lune run example
+   ```
 
 </Steps>
 

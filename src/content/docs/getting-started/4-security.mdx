@@ -25,15 +25,15 @@ but for proper security & deployments, using a container or a virtual machine is
 
 2. Now, place the untrusted script you want to run safely next to the `sandbox.luau` script.
 
-    ```bash title="Terminal"
-    lune run sandbox.luau script.luau -- [ARGUMENTS_HERE]
-    ```
+   ```bash title="Terminal"
+   lune run sandbox.luau script.luau -- [ARGUMENTS_HERE]
+   ```
 
-    Replace `script.luau` and `[ARGUMENTS_HERE]` with the path to the script and the arguments to run it with.
+   Replace `script.luau` and `[ARGUMENTS_HERE]` with the path to the script and the arguments to run it with.
 
 3. As the script runs, any requires to potentially dangerous modules will require your approval
    before continuing and any invocations to methods within approved modules will be logged.
 
-    Additionally, the output of the sandbox script and the script being run will be separated.
+   Additionally, the output of the sandbox script and the script being run will be separated.
 
 </Steps>
