@@ -1,0 +1,132 @@
+---
+title: Files & Directories
+---
+
+import { FileTree, Tabs, TabItem } from "@astrojs/starlight/components";
+
+Lune has a built-in library for interacting with the filesystem, [`fs`](../../api-reference/fs.md).
+This library will let you read, write, move, copy files & directories, and more.
+
+## Example File Tree
+
+Let's use this directory & file tree structure for our examples:
+
+<FileTree>
+
+- files.luau
+- dirs.luau
+- hello-world.json
+- files
+    - coolstuff.toml
+    - super.secret.txt
+
+</FileTree>
+
+<details>
+<summary>Show file contents</summary>
+
+<Tabs items={['hello-world.json', 'files/coolstuff.toml', 'files/super.secret.txt']}>
+	<TabItem label="hello-world.json">
+	```json title="JSON"
+	{
+		"Hello": "World"
+	}
+    ```
+    </TabItem>
+    <TabItem label="coolstuff.toml">
+	```toml title="TOML"
+	[you]
+	cool = true
+	awesome = "yep"
+    ```
+    </TabItem>
+    <TabItem label="files/super.secret.txt">
+	```txt title="TXT"
+	Hey you're not supposed to be in here!
+    ```
+    </TabItem>
+</Tabs>
+
+</details>
+
+## Files
+
+Reading and writing files using the `fs` library is very simple and _only_ involves strings:
+
+```luau
+// files.luau
+local fs = require("@lune/fs")
+
+--> Print out the contents of all of the files
+print(fs.readFile("hello-world.json"))
+print(fs.readFile("files/coolstuff.toml"))
+print(fs.readFile("files/super.secret.txt"))
+
+--> Create a new file in our "files" directory
+fs.writeFile("files/My Favorite Numbers.txt", "2 4 6 8 0 😃")
+
+--> Write to one of our files, overwriting any previous contents
+fs.writeFile("files/super.secret.txt", "Super secret message")
+
+--> Remove the new file we created in our "files" directory
+fs.removeFile("files/My Favorite Numbers.txt")
+```
+
+Note that the filesystem library deals with _raw_ strings for file contents, and does not
+differentiate between if the contents of the file are using binary, utf-8, or some other encoding.
+It is up to you to know how your files are structured and handle them appropriately.
+
+## Directories
+
+Reading and creating directories has a very similar API, but slightly different parameters and return values:
+
+```luau
+// dirs.luau
+local fs = require("@lune/fs")
+
+--[[
+	Print out the entries found in our directory.
+	The "." here means the current directory.
+
+	This will output:
+	* 📄 files.luau
+	* 📄 dirs.luau
+	* 📄 hello-world.json
+	* 📁 files
+]]
+for _, entry in fs.readDir(".") do
+	if fs.isDir(entry) then
+		print("📁 " .. entry)
+	elseif fs.isFile(entry) then
+		print("📄 " .. entry)
+	end
+end
+
+--> Create a new directory next to the above entries
+fs.writeDir("myCoolDir")
+
+--> Create a new directory in our "files" directory
+fs.writeDir("files/myCoolSecondDir")
+
+--> Remove the entire files directory
+fs.removeDir("files")
+```
+
+In the above example:
+
+- `fs.readDir` returns a table (array) of strings, with file and directory names
+- `fs.writeDir` takes only the directory name (path) to create a directory at
+- `fs.removeDir` removes the directory **_and everything inside it_** - use with caution!
+
+## Resulting File Tree
+
+This is what our directory & file tree structure would look like after running the above examples:
+
+<FileTree>
+
+- files.luau
+- dirs.luau
+- hello-world.json
+- myCoolDir/
+
+</FileTree>

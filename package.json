@@ -1,31 +1,20 @@
 {
-	"name": "lune-docs",
-	"version": "0.0.1",
-	"description": "Documentation site for Lune",
-	"scripts": {
-		"dev": "next",
-		"build": "next build",
-		"start": "next start"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/lune-org/docs.git"
-	},
-	"bugs": {
-		"url": "https://github.com/lune-orc/docs/issues"
-	},
-	"homepage": "https://github.com/lune-orc/docs#readme",
-	"dependencies": {
-		"next": "^15.4.1",
-		"nextra": "^4.2.17",
-		"nextra-theme-docs": "^4.2.17",
-		"react": "^19.1.0",
-		"react-dom": "^19.1.0"
-	},
-	"devDependencies": {
-		"@types/node": "^22.16.4",
-		"@types/react": "^19.1.8",
-		"@types/react-dom": "^19.1.6",
-		"typescript": "5.8.3"
-	}
+  "name": "starlight",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.34.6",
+    "astro": "^5.6.1",
+    "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
 }
