@@ -4,6 +4,8 @@ import starlight from "@astrojs/starlight";
 
 // https://astro.build/config
 export default defineConfig({
+  base: "/docs/",
+  site: "https://lune-org.github.io",
   integrations: [
     starlight({
       title: "Lune",
