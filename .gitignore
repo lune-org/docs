@@ -1,13 +1,13 @@
 /.DS_Store
 /node_modules
 /temp
-/out
+/dist
 /.astro
 /.env
 
 /**/.DS_Store
 /**/node_modules
 /**/temp
-/**/out
+/**/dist
 /**/.astro
 /**/.env
