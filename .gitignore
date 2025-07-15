@@ -4,6 +4,7 @@
 /out
 /.next
 /.env
+/_pagefind
 
 /**/.DS_Store
 /**/node_modules
@@ -11,3 +12,4 @@
 /**/out
 /**/.next
 /**/.env
+/**/_pagefind
