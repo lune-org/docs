@@ -1,15 +1,15 @@
 ---
-title: Files & Directories
+title: Working with Files
 ---
 
 import { FileTree, Tabs, TabItem } from "@astrojs/starlight/components";
 
-Lune has a built-in library for interacting with the filesystem, [`fs`](../../api-reference/fs.md).
-This library will let you read, write, move, copy files & directories, and more.
+The `fs` library lets you work with files and directories in Lune.
+You can read, write, copy, and move files around with no extra boilerplate.
 
 ## Example File Tree
 
-Let's use this directory & file tree structure for our examples:
+Let's use this directory and file structure for our examples:
 
 <FileTree>
 
@@ -27,22 +27,22 @@ Let's use this directory & file tree structure for our examples:
 
 <Tabs>
 	<TabItem label="hello-world.json">
-	```json title="JSON"
+	```json
 	{
 		"Hello": "World"
 	}
     ```
     </TabItem>
     <TabItem label="coolstuff.toml">
-	```toml title="TOML"
+	```toml
 	[you]
 	cool = true
 	awesome = "yep"
     ```
     </TabItem>
-    <TabItem label="files/super.secret.txt">
-	```txt title="TXT"
-	Hey you're not supposed to be in here!
+    <TabItem label="super.secret.txt">
+	```txt
+	Hey, you're not supposed to be in here!
     ```
     </TabItem>
 </Tabs>
@@ -51,76 +51,67 @@ Let's use this directory & file tree structure for our examples:
 
 ## Files
 
-Reading and writing files using the `fs` library is very simple and _only_ involves strings:
+Reading and writing files using the `fs` library is simple and only works with strings:
 
 ```luau
 // files.luau
 local fs = require("@lune/fs")
 
---> Print out the contents of all of the files
+-- Print out the contents of all of the files
 print(fs.readFile("hello-world.json"))
 print(fs.readFile("files/coolstuff.toml"))
 print(fs.readFile("files/super.secret.txt"))
 
---> Create a new file in our "files" directory
-fs.writeFile("files/My Favorite Numbers.txt", "2 4 6 8 0 😃")
+-- Create a new file in our "files" directory
+fs.writeFile("files/My Favorite Numbers.txt", "2 4 6 8 0")
 
---> Write to one of our files, overwriting any previous contents
+-- Write to one of our files, overwriting any previous contents
 fs.writeFile("files/super.secret.txt", "Super secret message")
 
---> Remove the new file we created in our "files" directory
+-- Remove the new file we created in our "files" directory
 fs.removeFile("files/My Favorite Numbers.txt")
 ```
 
-Note that the filesystem library deals with _raw_ strings for file contents, and does not
-differentiate between if the contents of the file are using binary, utf-8, or some other encoding.
-It is up to you to know how your files are structured and handle them appropriately.
+Note that the filesystem library works with raw strings for file contents and doesn't differentiate between binary, UTF-8, or other encodings. It's up to you to know how your files are structured and handle them appropriately.
 
 ## Directories
 
-Reading and creating directories has a very similar API, but slightly different parameters and return values:
+Reading and creating directories has a similar API, but with slightly different parameters and return values:
 
 ```luau
 // dirs.luau
 local fs = require("@lune/fs")
 
---[[
-	Print out the entries found in our directory.
-	The "." here means the current directory.
-
-	This will output:
-	* 📄 files.luau
-	* 📄 dirs.luau
-	* 📄 hello-world.json
-	* 📁 files
-]]
+-- Print out the entries found in our directory
+-- The "." here means the current directory
+print("Contents of current directory:")
 for _, entry in fs.readDir(".") do
 	if fs.isDir(entry) then
-		print("📁 " .. entry)
+		print(`📁 {entry}`)
 	elseif fs.isFile(entry) then
-		print("📄 " .. entry)
+		print(`📄 {entry}`)
 	end
 end
 
---> Create a new directory next to the above entries
+-- Create a new directory next to the above entries
 fs.writeDir("myCoolDir")
 
---> Create a new directory in our "files" directory
+-- Create a new directory in our "files" directory
 fs.writeDir("files/myCoolSecondDir")
 
---> Remove the entire files directory
+-- Remove the entire files directory
 fs.removeDir("files")
 ```
 
 In the above example:
 
-- `fs.readDir` returns a table (array) of strings, with file and directory names
-- `fs.writeDir` takes only the directory name (path) to create a directory at
-- `fs.removeDir` removes the directory **_and everything inside it_** - use with caution!
+- `fs.readDir` returns a table (array) of strings with file and directory names
+- `fs.writeDir` takes only the directory name (path) to create a directory
+- `fs.removeDir` removes the directory **and everything inside it** - use with caution!
 
 ## Resulting File Tree
 
-This is what our directory & file tree structure would look like after running the above examples:
+This is what our directory structure would look like after running the above examples:
 
 <FileTree>
 
@@ -130,3 +121,7 @@ This is what our directory & file tree structure would look like after running t
 - myCoolDir/
 
 </FileTree>
+
+## What's Next?
+
+Now that you know how to work with files and directories, let's learn about organizing your code with [Modules](./7-modules).
