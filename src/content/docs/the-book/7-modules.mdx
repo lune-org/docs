@@ -4,40 +4,43 @@ title: Modules
 
 import { FileTree, Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
-At this point you know how the most important built-in libraries in Lune work and how to use them,
-and your code is probably getting longer and more difficult to read. Splitting your code into
-multiple files can help you stay organized.
+At this point you know how the most important built-in libraries in Lune work and
+how to use them, and your code may be getting longer and more difficult to read...
 
 Modularizing your code and splitting it across several files in Lune is different from other
-versions of Lua and Luau, and more similar to how things work in other languages such as JavaScript.
+versions of Lua, and more similar to how things work in other languages such as JavaScript.
 
-## Example File Tree
+## Example File Structure
 
-Let's use this directory & file tree structure for our examples:
+Let's start with a typical module setup that we'll use throughout this chapter:
 
 <FileTree>
 
 - main.luau
 - sibling.luau
-- modules
+- directory
   - init.luau
-  - module.luau
+  - child.luau
 
 </FileTree>
+
+This structure shows the two main patterns you'll use - individual module files (`sibling.luau`) and directory modules (`modules/` with its `init.luau`).
+
+## Example File Contents
 
 <Tabs>
 	<TabItem label="Main File">
 	```luau
 	// main.luau
 	local sibling = require("./sibling")
-	local modules = require("./modules")
+	local directory = require("./directory")
 
     print(sibling.Hello) --> World
 
-    print(modules.Child.Foo) --> Bar
-    print(modules.Child.Fizz) --> Buzz
+    print(directory.Child.Foo) --> Bar
+    print(directory.Child.Fizz) --> Buzz
 
-    print(modules.Sibling.Hello) --> World
+    print(directory.Sibling.Hello) --> World
     ```
     </TabItem>
     <TabItem label="Sibling File">
@@ -48,18 +51,18 @@ Let's use this directory & file tree structure for our examples:
     }
     ```
     </TabItem>
-    <TabItem label="Dir Module > Init">
+    <TabItem label="Directory Module (init)">
     ```luau
-    // modules/init.luau
+    // directory/init.luau
     return {
     	Child = require("@self/child"),
-    	Sibling = require("./sibling"),
+    	Sibling = require("../sibling"),
     }
     ```
     </TabItem>
-    <TabItem label="Dir Module > Child">
+    <TabItem label="Child Module">
     ```luau
-    // modules/child.luau
+    // directory/child.luau
     return {
     	Foo = "Bar",
     	Fizz = "Buzz",
@@ -69,21 +72,288 @@ Let's use this directory & file tree structure for our examples:
 
 </Tabs>
 
-## File Require Statements
+## How Does It Work?
 
-Let's decipher these modules and what they are doing:
+Looking at our main file, you'll notice the require paths always start with `./` or `../`.
+This means "relative to the current file", the same way it does in your terminal.
+When `main.luau` requires `"./sibling"`, Lune looks for `sibling.luau` in the same directory as `main`.
 
-- The `main` module requires `sibling` and `modules` next to it
-- The `modules` module requires `child` inside of it using the special `@self` alias
-- The `modules` module requires `sibling` next to it using `./`
+The interesting part is `require("./modules")`.
+Lune sees this is a directory and automatically looks for `modules/init.luau`.
+Inside that init file, we use two different types of require statements:
 
-This is the standard behavior according to Luau require-by-string,
-which you can read more about on the official Luau documentation site.
+The statement `require("@self/child")` uses the special `@self` alias.
+Since init files represent their parent directory, `@self` means "inside the modules folder".
+Without it, `require("./child")` would look for `child.luau` _next to the modules folder_, not inside it.
 
 <Aside>
-  **Q:** Wait, hold on... The `main` script requires the _**directory**_ called
-  `modules`? <br />
-  **A:** Yep, that's right. The file name `init` is special, and putting a file
-  named `init.luau` in a directory will let you use `require` directly on the
-  directory. Similar to `index.js` in JavaScript or `mod.rs` in Rust.
+  **Q:** Wait, the main script requires a *directory*? <br />
+  **A:** Exactly! When you require a directory, Lune looks for `init.luau`
+  inside it. This pattern lets you create modules using directories - and these
+  are extremely useful for organizing your code as a reusable package, for
+  example.
 </Aside>
+
+## Coming from Other Languages
+
+If you're arriving at Lune with experience in other runtimes & languages, these comparisons may help you get oriented.
+If you want to get right into the nitty-gritty details, feel free to skip this section completely.
+
+<Tabs>
+    <TabItem label="Lua 5.x">
+        **Traditional Lua Structure:**
+
+        <FileTree>
+        - main.lua
+        - mylib.lua
+        - utils/
+          - init.lua
+          - helper.lua
+        </FileTree>
+
+        ```lua
+        // main.lua
+        -- Lua 5.x - requires are relative to the working directory
+        -- You need to configure package.path:
+        package.path = package.path .. ";./utils/?.lua"
+
+        local mylib = require("mylib")         -- Only works if CWD is correct
+        local utils = require("utils")         -- Needs package.path setup
+        local helper = require("utils.helper") -- Uses dots, not slashes
+        ```
+
+        ```luau
+        // main.luau
+        -- Lune - requires are relative to the file
+        local mylib = require("./mylib")         -- Always works
+        local utils = require("./utils")         -- No path config needed
+        local helper = require("./utils/helper") -- Uses slashes like paths
+        ```
+
+        The main difference here is that, in traditional Lua, requires depend on where you run the script from.
+        In Lune, requires are relative to the file containing them, making your code portable and predictable.
+    </TabItem>
+    <TabItem label="JavaScript / TypeScript">
+        **JavaScript / TypeScript Structure:**
+
+        <FileTree>
+        - package.json
+        - index.js
+        - lib/
+          - index.js
+          - helper.js
+        - node_modules/
+          - express/
+        </FileTree>
+
+        **Equivalent in Lune:**
+        <FileTree>
+        - main.luau
+        - lib/
+          - init.luau
+          - helper.luau
+        </FileTree>
+
+        ```js
+        // main.js
+        // JavaScript
+        const express = require('express')      // From node_modules
+        const lib = require('./lib')            // Local file
+        const helper = require('./lib/helper')  // Specific file
+        ```
+
+        ```luau
+        // main.luau
+        -- Lune has no centralized package management, yet...
+        local lib = require("./lib")           -- Same pattern
+        local helper = require("./lib/helper") -- Same pattern
+        ```
+
+        File-relative requires are familiar and work the same way.
+        The difference here is package management and dependency resolution.
+        JavaScript has standardized on `node_modules` for package management,
+        and there is no standardized package management solution in Lune yet.
+    </TabItem>
+    <TabItem label="Python">
+        **Python Structure:**
+        <FileTree>
+        - main.py
+        - mypackage/
+          - `__init__.py`
+          - module.py
+          - subpackage/
+            - `__init__.py`
+            - helper.py
+        </FileTree>
+
+        **Equivalent in Lune:**
+        <FileTree>
+        - main.luau
+        - mypackage/
+          - init.luau
+          - module.luau
+          - subpackage/
+            - init.luau
+            - helper.luau
+        </FileTree>
+
+        ```python
+        // main.py
+        # Python - many ways to import modules
+        import mypackage
+        from mypackage import module
+        from mypackage.subpackage import helper
+        import mypackage.module as mod
+        ```
+
+        ```luau
+        // main.luau
+        -- Lune - one single way to import modules
+        local mypackage = require("./mypackage")
+        local module = require("./mypackage/module")
+        local helper = require("./mypackage/subpackage/helper")
+        local mod = require("./mypackage/module") -- Aliasing via assignment
+        ```
+    </TabItem>
+    <TabItem label="Rust">
+        **Rust Structure:**
+        <FileTree>
+        - Cargo.toml
+        - src/
+          - main.rs
+          - lib.rs
+          - utils/
+            - mod.rs
+            - helper.rs
+        </FileTree>
+
+        **Equivalent in Lune:**
+        <FileTree>
+        - main.luau
+        - lib.luau
+        - utils/
+          - init.luau
+          - helper.luau
+        </FileTree>
+
+        ```rust
+        // main.rs
+        mod lib;
+        mod utils;
+
+        use crate::utils::helper;
+        use lib::something;
+        ```
+
+        ```luau
+        // main.luau
+        local lib = require("./lib")
+        local utils = require("./utils")
+
+        -- No use statements - access through the module using simple dot notation
+        local result = utils.helper.doSomething()
+        local thing = lib.something
+        ```
+
+        Like Rust, `init.luau` is your `mod.rs`.
+        Unlike Rust, there's no visibility modifiers or explicit module declarations - if you return a value, it is always public.
+    </TabItem>
+
+</Tabs>
+
+## Module Caching
+
+Every module you require gets cached on the first call to the `require` function.
+This means that it is safe to store state within modules, and expose it using public functions:
+
+```luau
+// counter.luau
+local count = 0
+return {
+    increment = function()
+        count += 1
+        return count
+    end
+}
+```
+
+```luau
+// main.luau
+local counter1 = require("./counter")
+local counter2 = require("./counter")
+
+print(counter1.increment()) --> 1
+print(counter2.increment()) --> 2 (same table & function pointer!)
+print(counter1 == counter2)  --> true
+```
+
+This caching behavior is usually what you want - it prevents duplicate initialization and lets modules maintain internal state.
+Just remember that if you need separate instances of a class or something similar, you'll need to return a function that creates its own, separate state.
+
+<details>
+<summary>Extra: Async Caching</summary>
+
+Lune actually has an extra trick up its sleeve - it caches modules properly even if they call asynchronous functions during initialization!
+This lends itself to some very useful patterns - such as reading configuration files using the asynchronous `@lune/fs` standard library during `require`.
+You can have a single module that handles reading configuration files, and require it concurrently from multiple files, without worrying about race conditions or the configuration being read more than once.
+
+</details>
+
+## Path Resolution
+
+Lune keeps path resolution simple and predictable.
+Paths are case-sensitive on all platforms (even Windows) and always use forward slashes.
+When you require `"./myModule"`, Lune checks for:
+
+1. `myModule.luau` (preferred extension)
+2. `myModule.lua` (for compatibility)
+3. `myModule/init.luau` (directory module)
+4. `myModule/init.lua` (directory module, compatibility)
+
+This behavior is also consistent across all platforms.
+
+## Configuring Aliases Using `.luaurc`
+
+Lune supports standardized Luau configuration files that can define aliases and other settings for your project.
+To use aliases, you will need to create a JSON-like configuration file named `.luaurc` inside of a directory, as such:
+
+```json
+// .luaurc
+{
+  "aliases": {
+    "utils": "./src/utilities",
+    "config": "./configuration"
+  }
+}
+```
+
+With these aliases defined, you can use them anywhere in your project, using the `@` prefix:
+
+```luau
+// script.luau
+-- Instead of long relative paths ...
+local config = require("../../../configuration/settings")
+local helper = require("../../src/utilities/helper")
+
+-- ...you can use aliases!
+local config = require("@config/settings")
+local helper = require("@utils/helper")
+```
+
+It is also possible to create multiple `.luaurc` configuration files in your project.
+When Lune looks for a `.luaurc` file, it searches from your script's directory up through parent directories.
+This means you can have project-wide configuration at the root, and override specific settings in subdirectories if necessary.
+
+<Aside>
+  **Note:** The built-in `@lune/` libraries like `@lune/fs` and `@lune/net` are
+  special - it is not possible to override them using your own custom aliases.
+</Aside>
+
+## What's Next?
+
+You now have all the tools to organize your Lune scripts into clean, reusable modules.
+You can split code into files, create module hierarchies with directories, and you understand how Lune's caching mechanism and path resolution work.
+
+But, what happens when you need functionality that Lune doesn't provide?
+Sometimes the best solution isn't to rewrite something in Luau - it's to use existing tools on your system.
+Let's extend Lune's capabilities by [Spawning Programs](./8-spawning-programs) next.
