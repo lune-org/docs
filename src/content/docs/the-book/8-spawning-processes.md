@@ -62,7 +62,7 @@ Beyond the ping example, here are some other ways you might use `process.exec`:
 local gitStatus = process.exec("git", { "status", "--short" })
 
 -- Compress files
-local zipResult = process.exec("zip", { "-r", "archive.zip", "folder/" })
+local zipResult = process.exec("zip", { "-r", "archive.zip", "dir/" })
 
 -- Manipulate images
 local result = process.exec("convert", { "input.png", "-resize", "800x600", "output.jpg" })

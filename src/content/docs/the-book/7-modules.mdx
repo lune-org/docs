@@ -82,8 +82,8 @@ Lune sees this is a directory and automatically looks for `modules/init.luau`.
 Inside that init file, we use two different types of require statements:
 
 The statement `require("@self/child")` uses the special `@self` alias.
-Since init files represent their parent directory, `@self` here means "inside the modules folder".
-Without it, `require("./child")` would look for `child.luau` _next to the modules folder_, not inside it.
+Since init files represent their parent directory, `@self` here means - inside the "modules" directory.
+Without it, `require("./child")` would look for `child.luau` _next to the "modules" directory_, not inside it.
 
 <Aside>
   **Q:** Wait, the main script requires a *directory*? <br />
