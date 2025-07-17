@@ -5,7 +5,7 @@ title: Modules
 import { FileTree, Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
 At this point you know how the most important built-in libraries in Lune work and
-how to use them, and your code may be getting longer and more difficult to read...
+how to use them - and your code may be getting longer and more difficult to read.
 
 Modularizing your code and splitting it across several files in Lune is different from other
 versions of Lua, and more similar to how things work in other languages such as JavaScript.
@@ -82,7 +82,7 @@ Lune sees this is a directory and automatically looks for `modules/init.luau`.
 Inside that init file, we use two different types of require statements:
 
 The statement `require("@self/child")` uses the special `@self` alias.
-Since init files represent their parent directory, `@self` means "inside the modules folder".
+Since init files represent their parent directory, `@self` here means "inside the modules folder".
 Without it, `require("./child")` would look for `child.luau` _next to the modules folder_, not inside it.
 
 <Aside>
@@ -309,7 +309,7 @@ When you require `"./myModule"`, Lune checks for:
 3. `myModule/init.luau` (directory module)
 4. `myModule/init.lua` (directory module, compatibility)
 
-This behavior is also consistent across all platforms.
+The search behavior is also consistent across all platforms.
 
 ## Configuring Aliases Using `.luaurc`
 
