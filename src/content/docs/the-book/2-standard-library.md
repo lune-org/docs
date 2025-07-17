@@ -14,7 +14,7 @@ Here are some of the most commonly used libraries:
 
 ## Importing Libraries
 
-Unlike Luau's built-in globals like [`math`](https://luau-lang.org/library#math-library) or [`table`](https://luau-lang.org/library#table-library), Lune's libraries need to be imported before you can use them. You do this with a special `require` statement:
+Unlike Luau's globals like [`math`](https://luau-lang.org/library#math-library) or [`table`](https://luau-lang.org/library#table-library), Lune's libraries need to be imported before you can use them. You do this with a special `require` statement:
 
 ```luau
 local fs = require("@lune/fs")
@@ -22,6 +22,6 @@ local net = require("@lune/net")
 local process = require("@lune/process")
 ```
 
-The `@lune/` prefix tells Lune that you want to use one of its built-in libraries rather than looking for a file in your project.
+The `@lune/` prefix tells Lune that you want to use one of its standard libraries rather than looking for a file in your project.
 
 Throughout the rest of this book, we'll explore these libraries in detail and see how they work together to make Lune scripts powerful and flexible.

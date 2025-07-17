@@ -15,7 +15,7 @@ Lune provides fully asynchronous APIs wherever possible, and is built in Rust �
 - 🧰 Fully featured APIs for the filesystem, networking, stdio, all included in the small (~5mb zipped) executable
 - 📚 World-class documentation, on the web _or_ directly in your editor, no network connection necessary
 - 🏡 Familiar runtime environment for Roblox developers, with an included 1-to-1 task scheduler port
-- ✏️ Optional built-in library for manipulating Roblox place & model files, and their instances
+- ✏️ Optional standard library for manipulating Roblox place & model files, and their instances
 
 ## Non-goals
 

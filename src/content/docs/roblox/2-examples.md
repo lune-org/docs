@@ -2,11 +2,11 @@
 title: "Example Scripts"
 ---
 
-These are a few short examples of things you can do using the built-in `roblox` library.
+These are a few short examples of things you can do using the `roblox` standard library.
 
 ## Make all parts anchored in a place file
 
-```luau copy
+```luau
 local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 
@@ -33,7 +33,7 @@ fs.writeFile("myPlaceFile.rbxl", file)
 
 ## Save instances in a place as individual model files
 
-```luau copy
+```luau
 local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 
@@ -57,7 +57,7 @@ end
 
 ## Make a new place from scratch
 
-```luau copy
+```luau
 local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 local Instance = roblox.Instance

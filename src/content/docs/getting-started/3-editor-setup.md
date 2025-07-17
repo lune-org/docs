@@ -8,7 +8,7 @@ Lune prioritizes developer experience, providing type definitions and documentat
 
 The open source Luau Language Server, also known as [`luau-lsp`](https://github.com/JohnnyMorganz/luau-lsp), is currently the main language server providing editor support for Luau. It supports a wide range of editors.
 
-Once you've installed both the language server and Lune, you can run the following built-in command to generate type definition files and create or update a standardized `.luaurc` configuration file:
+Once you've installed both the language server and Lune, you can run the following command to generate type definition files and create or update a standardized `.luaurc` configuration file:
 
 ```bash title="Terminal"
 lune setup

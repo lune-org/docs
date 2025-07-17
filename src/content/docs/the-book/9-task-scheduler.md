@@ -2,7 +2,7 @@
 title: The Task Scheduler
 ---
 
-Lune has a built-in task scheduler, which can let you run things at fixed intervals, ensure some work happens after everything else is already done, and more.
+Lune is built around a task scheduler, which can let you run things at fixed intervals, ensure some work happens after everything else is already done, and more.
 
 The task scheduler is the backbone of Lune, and lets you handle structured concurrency. It is implemented using lightweight Lua threads / coroutines, and has **strong ordering guarantees**.
 
@@ -30,6 +30,7 @@ This means that, in real world scenarios such as handling incoming requests in a
 This example script will run several tasks concurrently, in lightweight Lua threads, also known as coroutines:
 
 ```luau
+// basic-tasks.luau
 local task = require("@lune/task")
 
 print("Hello, scheduler!")
@@ -56,6 +57,7 @@ end)
 This example script runs a bit of work after all other threads have finished their work or are yielding waiting for some other result:
 
 ```luau
+// deferred-tasks.luau
 local task = require("@lune/task")
 
 task.defer(function()
@@ -80,6 +82,7 @@ print("Done!")
 Spawning tasks like this can be very useful together with asynchronous APIs from other standard libraries, such as [`net.request`](../../api-reference/net.md#request):
 
 ```luau
+// async-tasks.luau
 local net = require("@lune/net")
 local task = require("@lune/task")
 
@@ -107,6 +110,7 @@ completed = true
 Using the task library, it becomes trivial to implement signal objects that take callbacks to run when a signal is fired, and that can handle both synchronous and yielding (async) callbacks without additional complexity:
 
 ```luau
+// signals.luau
 local task = require("@lune/task")
 
 local function newSignal()
@@ -154,3 +158,13 @@ print("After firing")
 ```
 
 </details>
+
+## Conclusion
+
+Congratulations! You've completed The Lune Book and now have all the tools you need to build powerful scripts with Lune.
+
+You've learned how to work with files, make network requests, handle user input, organize code into modules, spawn external processes, and how to wrangle the task scheduler. More importantly, you've seen how these pieces work together to create scripts that are both simple to write and capable of handling complex real-world problems.
+
+The API reference in the sidebar contains detailed documentation for all of Lune's capabilities, and the community is always ready to help if you get stuck.
+
+Now go build! 🚀
