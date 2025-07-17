@@ -2,16 +2,13 @@
 title: The Task Scheduler
 ---
 
-Lune has a built-in task scheduler, which can let you run things at fixed intervals, ensure some
-work happens after everything else is already done, and more.
+Lune has a built-in task scheduler, which can let you run things at fixed intervals, ensure some work happens after everything else is already done, and more.
 
-The task scheduler is the backbone of Lune, and lets you handle structured concurrency. It is
-implemented using lightweight Lua threads / coroutines, and has **strong ordering guarantees**.
+The task scheduler is the backbone of Lune, and lets you handle structured concurrency. It is implemented using lightweight Lua threads / coroutines, and has **strong ordering guarantees**.
 
 ## Ordering
 
-The main purpose of the task scheduler is to ensure consistent ordering, and to
-let you prioritize work on three different levels by using the `task` standard library:
+The main purpose of the task scheduler is to ensure consistent ordering, and to let you prioritize work on three different levels by using the `task` standard library:
 
 1. **Immediate**: Tasks that should run immediately can be spawned using `task.spawn`.
 2. **Deferred**: Tasks that should run after all immediate tasks have finished can be spawned using `task.defer`.
@@ -20,12 +17,9 @@ let you prioritize work on three different levels by using the `task` standard l
 <details>
 <summary>Advanced: Runtime-Controlled Threads & Prioritization</summary>
 
-These are user-facing concepts, but perhaps more interesting, is that Lune _**prioritizes Lua threads**_
-over runtime-spawned tasks, such as those for incoming requests in `net.serve`.
+These are user-facing concepts, but perhaps more interesting, is that Lune _**prioritizes Lua threads**_ over runtime-spawned tasks, such as those for incoming requests in `net.serve`.
 
-This means that, in real world scenarios such as handling incoming requests in an HTTP server, the scheduler
-will ensure that your existing tasks are not starved of resources, and are always prioritized over handling
-new requests, for maximum throughput & lowest possible latency.
+This means that, in real world scenarios such as handling incoming requests in an HTTP server, the scheduler will ensure that your existing tasks are not starved of resources, and are always prioritized over handling new requests, for maximum throughput & lowest possible latency.
 
 </details>
 
@@ -33,8 +27,7 @@ new requests, for maximum throughput & lowest possible latency.
 
 ### Spawning Tasks & Waiting
 
-This example script will run several tasks concurrently, in lightweight Lua threads, also known as
-coroutines:
+This example script will run several tasks concurrently, in lightweight Lua threads, also known as coroutines:
 
 ```luau
 local task = require("@lune/task")
@@ -60,8 +53,7 @@ end)
 
 ### Deferring Work
 
-This example script runs a bit of work after all other threads have finished their work or are
-yielding waiting for some other result:
+This example script runs a bit of work after all other threads have finished their work or are yielding waiting for some other result:
 
 ```luau
 local task = require("@lune/task")
@@ -85,8 +77,7 @@ print("Done!")
 
 ### Advanced Usage & Async
 
-Spawning tasks like this can be very useful together with asynchronous APIs from other standard
-libraries, such as [`net.request`](../../api-reference/net.md#request):
+Spawning tasks like this can be very useful together with asynchronous APIs from other standard libraries, such as [`net.request`](../../api-reference/net.md#request):
 
 ```luau
 local net = require("@lune/net")
@@ -113,9 +104,7 @@ completed = true
 
 ### Barebones Signal Implementation
 
-Using the task library, it becomes trivial to implement signal objects that take callbacks to run
-when a signal is fired, and that can handle both synchronous and yielding (async) callbacks without
-additional complexity:
+Using the task library, it becomes trivial to implement signal objects that take callbacks to run when a signal is fired, and that can handle both synchronous and yielding (async) callbacks without additional complexity:
 
 ```luau
 local task = require("@lune/task")
