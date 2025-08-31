@@ -171,6 +171,7 @@ Currently supported formats:
 | `gzip`   | https://www.gnu.org/software/gzip |
 | `lz4`    | https://github.com/lz4/lz4        |
 | `zlib`   | https://www.zlib.net              |
+| `zstd`   | https://github.com/facebook/zstd  |
 
 ---
 
